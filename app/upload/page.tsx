@@ -164,49 +164,55 @@ export default function UploadResumePage() {
     setStatus("Resume exported successfully!");
   };
 
-  return (
-    <div>
-      <h1>Upload Resume</h1>
+ return (
+  <div className="min-h-screen flex justify-center items-start bg-linear-to-br from-slate-900 to-slate-800 py-10 px-4">
+    <div className="w-full max-w-xl bg-white/90 rounded-xl shadow-lg p-8">
+      <h1 className="text-2xl font-bold mb-6 text-slate-800">Upload Resume</h1>
 
       {/* STEP 1: Choose File & Upload */}
-      <form onSubmit={handleUpload}>
-        <div>
-          <label>Choose File (DOCX)</label>
-          <input
-            type="file"
-            accept=".docx"
-            onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
-            required
-          />
-          {file && <p>File selected: {file.name}</p>}
-        </div>
-        <button type="submit">Upload</button>
+      <form onSubmit={handleUpload} className="flex flex-col gap-4 mb-6">
+        <label className="font-medium text-slate-700">
+          Choose File (DOCX)
+        </label>
+        <input
+          type="file"
+          accept=".docx"
+          onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
+          required
+          className="border border-gray-300 rounded px-2 py-2 bg-white"
+        />
+        {file && <p className="text-sm text-green-700">File selected: {file.name}</p>}
+        <button
+          type="submit"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded font-semibold transition"
+        >
+          Upload
+        </button>
       </form>
 
-      {status && <p>{status}</p>}
+      {status && <p className="mb-4 text-sm font-semibold text-slate-600">{status}</p>}
 
       {/* STEP 2: Show ATS Score */}
       {atsScore && (
-        <div>
-          <h2>ATS Score: {atsScore.overallScore}/100</h2>
-
-          <div>
-            <h3>Score Breakdown:</h3>
-            <p>Keywords: {atsScore.breakdown.keywordsMatched.score}</p>
-            <p>Formatting: {atsScore.breakdown.formatting.score}</p>
-            <p>Metrics: {atsScore.breakdown.metrics.score}</p>
-            <p>Bullets: {atsScore.breakdown.bulletPoints.score}</p>
-            <p>Contact: {atsScore.breakdown.contact.score}</p>
+        <div className="mb-6">
+          <h2 className="text-lg font-bold mb-1 text-blue-700">ATS Score: {atsScore.overallScore}/100</h2>
+          <div className="grid grid-cols-2 gap-2 text-sm text-gray-700">
+            <div>Keywords: <span className="font-semibold">{atsScore.breakdown.keywordsMatched.score}</span></div>
+            <div>Formatting: <span className="font-semibold">{atsScore.breakdown.formatting.score}</span></div>
+            <div>Metrics: <span className="font-semibold">{atsScore.breakdown.metrics.score}</span></div>
+            <div>Bullets: <span className="font-semibold">{atsScore.breakdown.bulletPoints.score}</span></div>
+            <div>Contact: <span className="font-semibold">{atsScore.breakdown.contact.score}</span></div>
           </div>
-
-          <div>
-            <h3>Found Skills:</h3>
+          <div className="mt-2">
+            <span className="block font-medium mb-1">Found Skills:</span>
             {extractedSkills && extractedSkills.length > 0 ? (
-              extractedSkills.map((skill, idx) => (
-                <span key={idx}>{skill} | </span>
-              ))
+              <div className="flex flex-wrap gap-2">
+                {extractedSkills.map((skill, idx) => (
+                  <span key={idx} className="bg-blue-100 text-blue-900 rounded px-2 py-1 text-xs">{skill}</span>
+                ))}
+              </div>
             ) : (
-              <p>No matching skills found</p>
+              <p className="text-xs text-gray-500">No matching skills found</p>
             )}
           </div>
         </div>
@@ -214,13 +220,12 @@ export default function UploadResumePage() {
 
       {/* STEP 3: Things to Improve */}
       {atsScore && atsScore.overallScore < 80 && (
-        <div>
-          <h3>Things to Improve:</h3>
-
+        <div className="bg-orange-100 border-l-4 border-orange-400 rounded p-4 mb-6">
+          <h3 className="font-semibold text-orange-900 mb-2">Things to Improve:</h3>
           {atsScore.breakdown.formatting.issues.length > 0 && (
-            <div>
-              <h4>Formatting Issues:</h4>
-              <ul>
+            <div className="mb-2">
+              <h4 className="font-semibold text-sm text-black">Formatting Issues:</h4>
+              <ul className="ml-4 list-disc text-xs text-gray-900">
                 {atsScore.breakdown.formatting.issues.map(
                   (issue: string, idx: number) => (
                     <li key={idx}>{issue}</li>
@@ -229,11 +234,10 @@ export default function UploadResumePage() {
               </ul>
             </div>
           )}
-
           {atsScore.breakdown.bulletPoints.issues.length > 0 && (
-            <div>
-              <h4>Bullet Points:</h4>
-              <ul>
+            <div className="mb-2">
+              <h4 className="font-semibold text-sm text-black">Bullet Points:</h4>
+              <ul className="ml-4 list-disc text-gray-900 text-xs">
                 {atsScore.breakdown.bulletPoints.issues.map(
                   (issue: string, idx: number) => (
                     <li key={idx}>{issue}</li>
@@ -242,11 +246,10 @@ export default function UploadResumePage() {
               </ul>
             </div>
           )}
-
           {atsScore.breakdown.contact.issues.length > 0 && (
-            <div>
-              <h4>Contact Info Issues:</h4>
-              <ul>
+            <div className="mb-2">
+              <h4 className="font-semibold text-sm text-black">Contact Info Issues:</h4>
+              <ul className="ml-4 text-gray-900 list-disc text-xs">
                 {atsScore.breakdown.contact.issues.map(
                   (issue: string, idx: number) => (
                     <li key={idx}>{issue}</li>
@@ -255,35 +258,34 @@ export default function UploadResumePage() {
               </ul>
             </div>
           )}
-
           <div>
-            <h4>Metrics Recommendation:</h4>
-            <p>{atsScore.breakdown.metrics.recommendation}</p>
-            <p>Metrics found: {atsScore.breakdown.metrics.found}</p>
+            <h4 className="font-semibold text-black text-sm">Metrics Recommendation:</h4>
+            <p className="text-xs text-gray-900">{atsScore.breakdown.metrics.recommendation}</p>
+            <p className="text-xs text-gray-900">Metrics found: {atsScore.breakdown.metrics.found}</p>
           </div>
         </div>
       )}
 
       {/* STEP 4: Display & Edit Resume */}
       {extractedText && (
-        <div>
-          <h2>Resume Content - Edit Below</h2>
+        <div className="mb-6">
+          <h2 className="text-lg font-bold mb-2 text-slate-800">Resume Content - Edit Below</h2>
           <textarea
             value={extractedText}
             onChange={(e) => setExtractedText(e.target.value)}
-            rows={15}
-            style={{ width: "100%", padding: "10px" }}
+            rows={10}
+            className="w-full rounded border border-gray-300 p-2 text-sm font-mono bg-white mb-2 text-black"
           />
         </div>
       )}
 
       {/* STEP 4.1: Editable Skills */}
       {extractedText && (
-        <div>
-          <h3>Edit Skills</h3>
-          <div>
+        <div className="mb-6">
+          <h3 className="font-semibold mb-2 text-slate-700">Edit Skills</h3>
+          <div className="flex flex-wrap gap-2 mb-2">
             {extractedSkills.map((skill, idx) => (
-              <span key={idx}>
+              <span key={idx} className="bg-blue-100 text-blue-900 rounded px-2 py-1 text-xs flex items-center">
                 {skill}
                 <button
                   type="button"
@@ -292,18 +294,19 @@ export default function UploadResumePage() {
                       prev.filter((_, i) => i !== idx)
                     )
                   }
+                  className="ml-1 text-red-600 hover:text-red-900 text-xs font-bold"
                 >
                   ×
                 </button>
               </span>
             ))}
           </div>
-
-          <div>
+          <div className="flex gap-2">
             <input
               type="text"
               placeholder="Add new skill"
               id="newSkillInput"
+              className=" placeholder:text-gray-300 border border-gray-300 rounded px-2 py-1 text-sm  bg-white flex-1"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
@@ -328,6 +331,7 @@ export default function UploadResumePage() {
                   input.value = "";
                 }
               }}
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded text-sm"
             >
               Add
             </button>
@@ -337,34 +341,52 @@ export default function UploadResumePage() {
 
       {/* STEP 5: Save & Export Buttons */}
       {extractedText && (
-        <div>
-          <button onClick={handleSaveChanges} disabled={isSaving}>
+        <div className="flex gap-4 mb-6">
+          <button
+            onClick={handleSaveChanges}
+            disabled={isSaving}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition disabled:opacity-50"
+          >
             {isSaving ? "Saving..." : "Save Changes"}
           </button>
-          <button onClick={handleExport}>Export Resume</button>
+          <button
+            onClick={handleExport}
+            className="bg-gray-600 hover:bg-gray-700 text-white font-semibold px-4 py-2 rounded transition"
+          >
+            Export Resume
+          </button>
         </div>
       )}
 
       {/* NEW: Check Match button logic */}
-      <div style={{ marginTop: "20px" }}>
+      <div>
         {hasUpload === false ? (
           <button
             type="button"
-            onClick={() => alert("Upload a resume to check match")}
+            className="w-full bg-gray-400 text-white rounded py-2 font-semibold cursor-not-allowed"
             disabled
           >
             Upload resume to check match
           </button>
         ) : hasJD ? (
-          <button type="button" onClick={() => router.push("/match")}>
+          <button
+            type="button"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white rounded py-2 font-semibold"
+            onClick={() => router.push("/match")}
+          >
             Check Match
           </button>
         ) : (
-          <button type="button" onClick={() => router.push("/upload-jd")}>
+          <button
+            type="button"
+            className="w-full bg-yellow-500 hover:bg-yellow-600 text-white rounded py-2 font-semibold"
+            onClick={() => router.push("/upload-jd")}
+          >
             Upload JD to check match
           </button>
         )}
       </div>
     </div>
-  );
+  </div>
+);
 }

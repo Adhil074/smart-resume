@@ -113,55 +113,73 @@ export default function UploadJDPage() {
   }
 
   return (
-    <div>
-      <h1>Upload Job Description</h1>
+    <div className="min-h-screen flex flex-col justify-center items-center bg-linear-to-br from-slate-900 to-slate-800 py-10 px-4">
+      <div className="bg-white w-150 flex items-center justify-center mb-1 rounded-lg flex-col">
+        <h1 className="text-2xl font-bold mb-1 mt-1 text-slate-800 ">
+          Upload Job Description
+        </h1>
+      </div>
 
       <textarea
         placeholder="Paste job description here..."
         value={jdText}
         onChange={(e) => setJdText(e.target.value)}
-        style={{ width: "90%", minHeight: "260px" }}
+        className="w-200 min-h-[350px] rounded-lg border border-gray-300 p-3 mb-6 bg-slate-50 text-gray-800 placeholder:text-gray-500 "
       />
 
       <br />
 
-      <button type="button" onClick={handleAnalyze} disabled={isLoading}>
+      <button
+        type="button"
+        onClick={handleAnalyze}
+        disabled={isLoading}
+        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-semibold transition mb-4"
+      >
         {isLoading ? "Analyzing..." : "Analyze JD"}
       </button>
       {jdskills.length > 0 && (
-        <h2 style={{ marginTop: "1.5rem" }}>Recommended learning resources</h2>
+        <h2 className="text-xl font-bold mb-6 text-white mt-7">
+          Learning resources
+        </h2>
       )}
 
-      <div style={{ marginTop: "0.75rem" }}>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {jdskills.map((skill, index) => {
           const resources = getBestResourcesForSkill(skill);
 
           return (
-            <div key={index} style={{ marginBottom: "0.75rem" }}>
-              <h3>{skill}</h3>
-              <a
-                href={resources.youtube}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                YouTube
-              </a>
-              {" | "}
-              <a
-                href={resources.docs}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Docs
-              </a>
-              {" | "}
-              <a
-                href={resources.course}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Courses
-              </a>
+            <div
+              key={index}
+              className="bg-slate-50 text-black rounded-lg p-1 border border-gray-200 hover:shadow-md transition"
+            >
+              <h3 className="text-lg font-semibold mb-3">{skill}</h3>
+
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href={resources.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded font-medium transition"
+                >
+                  YouTube
+                </a>
+                <a
+                  href={resources.docs}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded font-medium transition"
+                >
+                  Docs
+                </a>
+                <a
+                  href={resources.course}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded font-medium transition"
+                >
+                  Courses
+                </a>
+              </div>
             </div>
           );
         })}

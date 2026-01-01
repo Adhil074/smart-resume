@@ -1,63 +1,3 @@
-// // app/chatbot/page.tsx
-// "use client";
-
-// import { useState } from "react";
-
-// export default function ChatbotPage() {
-//   const [input, setInput] = useState("");
-//   const [messages, setMessages] = useState<string[]>([]);
-
-//   const sendMessage = async () => {
-//     if (!input.trim()) return;
-
-//     // Add user's message to UI
-//     setMessages((prev) => [...prev, "You: " + input]);
-
-//     // Call backend API (we will build this next)
-//     const res = await fetch("/api/chat", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({ message: input }),
-//     });
-
-//     const data = await res.json();
-
-//     // Add AI reply
-//     setMessages((prev) => [...prev, "AI: " + data.reply]);
-
-//     setInput("");
-//   };
-
-//   return (
-//     <div style={{ padding: "20px" }}>
-//       <h1>AI Resume Assistant</h1>
-
-//       {/* Show messages */}
-//       <div style={{ margin: "20px 0", minHeight: "200px", padding: "10px", border: "1px solid #ccc" }}>
-//         {messages.map((msg, i) => (
-//           <p key={i}>{msg}</p>
-//         ))}
-//       </div>
-
-//       {/* Input box */}
-//       <input
-//         type="text"
-//         style={{ width: "70%", padding: "10px" }}
-//         placeholder="Ask something..."
-//         value={input}
-//         onChange={(e) => setInput(e.target.value)}
-//       />
-
-//       <button
-//         style={{ marginLeft: "10px", padding: "10px" }}
-//         onClick={sendMessage}
-//       >
-//         Send
-//       </button>
-//     </div>
-//   );
-// }
-
 "use client";
 
 import { useState, useRef, useEffect } from "react";
@@ -170,54 +110,113 @@ What would you like help with today?`,
   ];
 
   if (status === "loading") {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen bg-linear-to-br from-slate-900 to-slate-800 flex items-center justify-center">
+        <p className="text-white text-lg">Loading...</p>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h1>AI Career Assistant</h1>
-      <p>Your personal AI-powered career coach</p>
+    <div className="min-h-screen bg-linear-to-br from-slate-900 to-slate-800 py-10 px-4">
+      <div className="max-w-5xl mx-auto flex flex-col gap-6">
+        {/* Header */}
+        <header>
+          <h1 className="text-3xl font-bold text-white mb-2">
+            AI Career Assistant
+          </h1>
+          <p className="text-slate-300">
+            Your personal AI-powered career coach
+          </p>
+        </header>
 
-      <div>
-        <p>Quick Actions:</p>
-        {quickActions.map((action) => (
-          <button
-            key={action.type}
-            onClick={() => setSelectedType(action.type)}
-          >
-            {action.label}
-          </button>
-        ))}
-      </div>
+        {/* Quick actions */}
+        <section className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 md:p-5">
+          <p className="text-sm font-semibold text-slate-200 mb-3">
+            Quick Actions:
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {quickActions.map((action) => (
+              <button
+                key={action.type}
+                onClick={() => setSelectedType(action.type)}
+                className={`px-3 py-1.5 rounded-full text-xs md:text-sm font-medium border transition ${
+                  selectedType === action.type
+                    ? "bg-blue-600 border-blue-500 text-white"
+                    : "bg-slate-800 border-slate-600 text-slate-200 hover:bg-slate-700"
+                }`}
+              >
+                {action.label}
+              </button>
+            ))}
+          </div>
+        </section>
 
-      <div>
-        <div>
-          {messages.map((message, index) => (
-            <div key={index}>
-              <div>
-                <p>{message.content}</p>
-                <p>{message.timestamp.toLocaleTimeString()}</p>
+        {/* Chat area */}
+        <main className="bg-white rounded-2xl shadow-xl flex flex-col h-[70vh] max-h-[700px]">
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 bg-slate-50 border-b border-slate-200">
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={`flex ${
+                  message.role === "user" ? "justify-end" : "justify-start"
+                }`}
+              >
+                <div
+                  className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm md:text-base shadow ${
+                    message.role === "user"
+                      ? "bg-blue-600 text-white rounded-br-sm"
+                      : "bg-white text-slate-800 border border-slate-200 rounded-bl-sm"
+                  }`}
+                >
+                  <p className="whitespace-pre-wrap">{message.content}</p>
+                  <p
+                    className={`mt-1 text-[11px] text-right ${
+                      message.role === "user"
+                        ? "text-blue-100"
+                        : "text-slate-400"
+                    }`}
+                  >
+                    {message.timestamp.toLocaleTimeString()}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
-          {isLoading && <div>Loading...</div>}
-          <div ref={messagesEndRef} />
-        </div>
+            ))}
+            {isLoading && (
+              <div className="text-xs text-slate-500">Assistant is typing…</div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
 
-        <div>
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Type your message..."
-            rows={3}
-            disabled={isLoading}
-          />
-          <button onClick={handleSend} disabled={isLoading || !input.trim()}>
-            {isLoading ? "Sending..." : "Send"}
-          </button>
-          <p>Current mode: {selectedType.replace(/_/g, " ")}</p>
-        </div>
+          {/* Input area */}
+          <div className="p-4 md:p-5 space-y-2">
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Type your message..."
+              rows={3}
+              disabled={isLoading}
+              className="w-full resize-none rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm md:text-base text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-60"
+            />
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-xs text-slate-500">
+                Current mode:{" "}
+                <span className="font-semibold text-slate-700">
+                  {selectedType.replace(/_/g, " ")}
+                </span>
+              </p>
+              <button
+                onClick={handleSend}
+                disabled={isLoading || !input.trim()}
+                className="inline-flex items-center justify-center px-5 py-2 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition"
+              >
+                {isLoading ? "Sending..." : "Send"}
+              </button>
+            </div>
+          </div>
+        </main>
       </div>
     </div>
   );
