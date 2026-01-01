@@ -45,7 +45,7 @@ export default function LoginPage() {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="block w-full px-4 py-2 border border-gray-500 rounded placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+          className="block w-full px-4 py-2 border border-gray-500 rounded placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition text-black"
         />
 
         <br />
@@ -56,7 +56,7 @@ export default function LoginPage() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="block w-full px-4 py-2 border border-gray-300 rounded placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+            className="block w-full px-4 py-2 border border-gray-300 rounded placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition text-black"
           />
           <button
             type="button"

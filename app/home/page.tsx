@@ -82,7 +82,7 @@ export default function HomePage() {
               className="group p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-200"
             >
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-2xl">📄</span>
+                <span className="text-2xl"></span>
                 <span className="font-semibold text-slate-900 group-hover:text-blue-600">
                   Upload Resume
                 </span>
@@ -98,7 +98,7 @@ export default function HomePage() {
               className="group p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-200"
             >
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-2xl">✏️</span>
+                <span className="text-2xl"></span>
                 <span className="font-semibold text-slate-900 group-hover:text-blue-600">
                   Create Resume
                 </span>
@@ -114,7 +114,7 @@ export default function HomePage() {
               className="group p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-200"
             >
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-2xl">💼</span>
+                <span className="text-2xl"></span>
                 <span className="font-semibold text-slate-900 group-hover:text-blue-600">
                   Upload JD
                 </span>
@@ -128,7 +128,7 @@ export default function HomePage() {
               className="group p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-200"
             >
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-2xl">📋</span>
+                <span className="text-2xl"></span>
                 <span className="font-semibold text-slate-900 group-hover:text-blue-600">
                   Previous Resumes
                 </span>
@@ -142,7 +142,7 @@ export default function HomePage() {
               className="group p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-200"
             >
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-2xl">🤖</span>
+                <span className="text-2xl"></span>
                 <span className="font-semibold text-slate-900 group-hover:text-blue-600">
                   AI Chatbot
                 </span>

@@ -48,7 +48,7 @@ export default function SignupPage() {
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className="block w-full px-4 py-2 border border-gray-500 rounded placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+          className="block w-full px-4 py-2 text-black border border-gray-500 rounded placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
         />
         <br />
         <input
@@ -56,7 +56,7 @@ export default function SignupPage() {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="block w-full px-4 py-2 border border-gray-500 rounded placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+          className="block w-full px-4 py-2 text-black border border-gray-500 rounded placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
         />
         <br />
 
@@ -66,7 +66,7 @@ export default function SignupPage() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="block w-full px-4 py-2 border border-gray-300 rounded placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+            className="block w-full px-4 py-2  text-black border border-gray-300 rounded placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
           />
           <button
             type="button"

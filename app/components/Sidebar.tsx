@@ -51,7 +51,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             onClick={handleSignOut}
             className="w-full flex items-center gap-3 px-4 py-3 text-left text-red-600 hover:bg-red-50 rounded-lg transition-colors"
           >
-            <span className="text-xl">🚪</span>
+            <span className="text-xl"></span>
             <span className="font-medium">Sign Out</span>
           </button>
         </div>
