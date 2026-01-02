@@ -9,7 +9,7 @@ import Resume from "../../models/Resume";
 import { extractTextFromFile } from "@/lib/extractText";
 import { analyzeATSScore } from "@/lib/atsAnalyzer";
 import { findSkillsInText } from "@/lib/parseSkills";
-import { log } from "console";
+
 
 console.log("MONGODB_URI exists?", !!process.env.MONGODB_URI);
 console.log(
@@ -55,7 +55,7 @@ export default async function handler(
   try {
     await connectDB();
 
-    const { fields, files } = await parseForm(req);
+    const { files } = await parseForm(req);
 
     // Don't need name/email - only file upload for now
     const fileArray = files.resume;

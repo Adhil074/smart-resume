@@ -166,7 +166,7 @@ ${resume.extractedSkills.join(", ")}
           <h3 className="text-lg font-semibold text-slate-800 mb-4">
             Extracted Text
           </h3>
-          <div className="bg-slate-50 border border-slate-200 rounded p-4 max-h-[500px] overflow-auto text-sm text-slate-800 whitespace-pre-wrap break-words">
+          <div className="bg-slate-50 border border-slate-200 rounded p-4 max-h-[500px] overflow-auto text-sm text-slate-800 whitespace-pre-wrap wrap-break-word">
             {resume.extractedText || "No text extracted"}
           </div>
         </div>

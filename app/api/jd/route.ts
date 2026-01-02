@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     await newJD.save();
 
     return NextResponse.json({ success: true });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "Failed to save JD" }, { status: 500 });
   }
 }

@@ -1,3 +1,5 @@
+//smart-resume\app\api\signup\route.ts
+
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import connectDB from "@/lib/mongodb";
@@ -32,7 +34,7 @@ export async function POST(request: Request) {
   return NextResponse.json({ success: true, userId: newUser._id }, { status: 201 });
 }
 
-catch(error){
+catch{
     return NextResponse.json(
         {error:"Signup failed"},
         {status:500}

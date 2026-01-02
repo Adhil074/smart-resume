@@ -25,45 +25,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* -----------------------------------
-   Resume (SCREEN PREVIEW DEFAULT)
------------------------------------ */
-.pdf-resume {
-  width: 100%;
-  padding: 16px;
-  box-sizing: border-box;
-  background: #ffffff;
-  color: #000000;
-}
 
-/* Avoid breaking sections across pages */
-.pdf-resume section {
-  page-break-inside: avoid;
-}
 
-/* -----------------------------------
-   PDF ONLY RULES (PERMANENT FIX)
------------------------------------ */
-@media print {
-  body {
-    background: #ffffff;
-  }
 
-  .pdf-resume {
-    width: 210mm;        /* A4 width */
-    min-height: 297mm;  /* A4 height */
-    padding: 20mm;
-    background: #ffffff;
-  }
 
-  /* Real spacer to prevent top text clipping */
-  .pdf-top-spacer {
-    height: 12mm;
-  }
-
-  /* Prevent headers from being cut */
-  .pdf-resume h1,
-  .pdf-resume h2 {
-    page-break-after: avoid;
-  }
-}
