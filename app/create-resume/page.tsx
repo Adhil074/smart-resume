@@ -1,6 +1,9 @@
+//app\create-resume\page.tsx
+
 "use client";
 import { useState } from "react";
 import { useEffect } from "react";
+
 export default function CreateResumePage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -99,7 +102,7 @@ ${skills}`
                   placeholder="Enter professional summary..."
                   value={summary}
                   onChange={(e) => setSummary(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded bg-slate-50 text-gray-800 placeholder:text-gray-500 min-h-[80px]"
+                  className="w-full px-3 py-2 border border-gray-300 rounded bg-slate-50 text-gray-800 placeholder:text-gray-500 min-h-20"
                 />
               </div>
 

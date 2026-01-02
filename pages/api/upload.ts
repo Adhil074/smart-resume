@@ -4,11 +4,11 @@ import type { Fields, Files } from "formidable";
 import type { File } from "formidable";
 import fs from "fs";
 import path from "path";
-import connectDB from "../../../lib/mongodb";
-import Resume from "../../../models/Resume";
-import { extractTextFromFile } from "../../../lib/extractText";
-import { analyzeATSScore } from "../../../lib/atsAnalyzer";
-import { findSkillsInText } from "../../../lib/parseSkills";
+import connectDB from "../../lib/mongodb";
+import Resume from "../../models/Resume";
+import { extractTextFromFile } from "@/lib/extractText";
+import { analyzeATSScore } from "@/lib/atsAnalyzer";
+import { findSkillsInText } from "@/lib/parseSkills";
 import { log } from "console";
 
 console.log("MONGODB_URI exists?", !!process.env.MONGODB_URI);

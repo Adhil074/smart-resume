@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import connectDB from "../../../../lib/mongodb";
-import User from "../../../../models/User";
+import connectDB from "@/lib/mongodb";
+import User from "@/models/User";
 //signup endpoint
 //now lets write post function
 //This line tells Next.js: “When someone sends a POST request to /api/signup, run this function.

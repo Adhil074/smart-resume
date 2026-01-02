@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MongoClient, ObjectId } from "mongodb";
-import { analyzeATSScore } from "../../../../lib/atsAnalyzer";
-import { SKILLS_LIST } from "../../../../lib/skills";
+import { analyzeATSScore } from "@/lib/atsAnalyzer";
+import { SKILLS_LIST } from "@/lib/skills";
 
 const MONGODB_URI = process.env.MONGODB_URI!;
 
