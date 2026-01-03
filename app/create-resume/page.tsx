@@ -40,6 +40,45 @@ ${skills}`
 
     URL.revokeObjectURL(url);
   }
+  async function downloadPDF(): Promise<void> {
+    try {
+      const response = await fetch("/api/resume/pdf", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fullName,
+          email,
+          phone,
+          summary,
+          jobTitle,
+          company,
+          years,
+          skills,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate PDF");
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "resume.pdf";
+      document.body.appendChild(a);
+      a.click();
+
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("PDF download error:", error);
+      alert("PDF generation failed");
+    }
+  }
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-900 to-slate-800 py-10 px-4">
@@ -201,6 +240,13 @@ ${skills}`
               className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded font-semibold transition"
             >
               Download as .txt
+            </button>
+            <button
+              type="button"
+              onClick={downloadPDF}
+              className="w-full mt-3 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded font-semibold transition"
+            >
+              Download as PDF
             </button>
           </div>
         </div>

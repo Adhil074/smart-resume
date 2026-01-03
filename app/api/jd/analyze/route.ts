@@ -59,7 +59,7 @@ ${jdText}`,
       } else if (parsed && Array.isArray(parsed.skills)) {
         skills = parsed.skills;
       }
-    } catch (e: unknown) {
+    } catch {
       // Fallback: split lines/commas if JSON.parse still fails
       skills = text
         .split(/[\n,]/)
@@ -68,7 +68,7 @@ ${jdText}`,
     }
 
     return NextResponse.json({ skills });
-  } catch (error: unknown) {
+  } catch {
     return NextResponse.json(
       { error: "AI extraction failed" },
       { status: 500 }
