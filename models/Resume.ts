@@ -1,6 +1,24 @@
-// import mongoose, { Schema } from "mongoose";
+// // models/Resume.ts
 
-// const resumeSchema = new Schema(
+// import mongoose, { Schema, Types } from "mongoose";
+
+// export interface ResumeDocument {
+//   _id: Types.ObjectId;
+//   userId: Types.ObjectId;
+//   name: string;
+//   email: string;
+//   fileName: string;
+//   // filePath: string;
+//   fileId: Types.ObjectId;
+//   mimeType: string;
+//   extractedText: string;
+//   extractedSkills: string[];
+//   uploadedAt: Date;
+//   createdAt: Date;
+//   updatedAt: Date;
+// }
+
+// const resumeSchema = new Schema<ResumeDocument>(
 //   {
 //     userId: {
 //       type: Schema.Types.ObjectId,
@@ -8,23 +26,54 @@
 //       required: true,
 //       index: true,
 //     },
-//     name: String,
-//     email: String,
-//     fileName: String,
-//     filePath: String,
-//     extractedText: { type: String, default: "" },
-//     extractedSkills: { type: [String], default: [] },
+//     name: {
+//       type: String,
+//       required: true,
+//       trim: true,
+//     },
+//     email: {
+//       type: String,
+//       required: true,
+//       trim: true,
+//       lowercase: true,
+//     },
+//     fileName: {
+//       type: String,
+//       required: true,
+//     },
+//     // filePath: {
+//     //   type: String,
+//     //   required: true,
+//     // },
+//     fileId: {
+//       type: Schema.Types.ObjectId,
+//       required: true,
+//     },
+//     mimeType: {
+//       type: String,
+//       required: true,
+//     },
+//     extractedText: {
+//       type: String,
+//       default: "",
+//     },
+//     extractedSkills: {
+//       type: [String],
+//       default: [],
+//     },
 //     uploadedAt: {
 //       type: Date,
 //       default: Date.now,
 //     },
 //   },
-//   { timestamps: true }
+//   {
+//     timestamps: true,
+//   }
 // );
 
-// export default mongoose.models.Resume || mongoose.model("Resume", resumeSchema);
+// const Resume = mongoose.models.Resume || mongoose.model("Resume", resumeSchema);
 
-// models/Resume.ts
+// export default Resume;
 
 import mongoose, { Schema, Types } from "mongoose";
 
@@ -34,7 +83,8 @@ export interface ResumeDocument {
   name: string;
   email: string;
   fileName: string;
-  filePath: string;
+  mimeType: string;
+  fileData: Buffer;
   extractedText: string;
   extractedSkills: string[];
   uploadedAt: Date;
@@ -65,8 +115,12 @@ const resumeSchema = new Schema<ResumeDocument>(
       type: String,
       required: true,
     },
-    filePath: {
+    mimeType: {
       type: String,
+      required: true,
+    },
+    fileData: {
+      type: Buffer,
       required: true,
     },
     extractedText: {
@@ -87,6 +141,7 @@ const resumeSchema = new Schema<ResumeDocument>(
   }
 );
 
-const Resume = mongoose.models.Resume || mongoose.model("Resume", resumeSchema);
+const Resume =
+  mongoose.models.Resume || mongoose.model("Resume", resumeSchema);
 
 export default Resume;

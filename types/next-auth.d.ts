@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// //smart-resume\types\next-auth.d.ts
+
+// /* eslint-disable @typescript-eslint/no-explicit-any */
 import NextAuth from "next-auth";
 
 declare module "next-auth" {
@@ -14,3 +18,9 @@ declare module "next-auth" {
     id: string;
   }
 }
+// declare module 'pdfjs-dist/legacy/build/pdf.js';
+declare module 'pdf-parse/lib/pdf-parse' {
+    function PDFParse(dataBuffer: Buffer, options?: any): Promise<any>;
+    export default PDFParse;
+}
+

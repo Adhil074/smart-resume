@@ -1,3 +1,5 @@
+//app\api\analyzeResume\route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import { MongoClient, ObjectId } from "mongodb";
 import { findSkillsInText } from "@/lib/parseSkills";

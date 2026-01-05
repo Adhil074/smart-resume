@@ -17,6 +17,7 @@ export const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+
         // basic sanity check
         if (!credentials?.email || !credentials?.password) {
           return null;
@@ -33,16 +34,20 @@ export const authOptions: AuthOptions = {
         if (!user) return null;
 
         // compare hashed passwords
-        const isValid = await bcrypt.compare(credentials.password, user.password);
+        const isValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
         if (!isValid) return null;
 
         // return the object NextAuth expects (id must be string)
         return {
           id: user._id.toString(),
           email: user.email,
-          name: user.username || user.email,
+          name: user.name ?? user.email,
         };
       },
+      
     }),
   ],
 

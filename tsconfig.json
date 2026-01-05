@@ -1,3 +1,5 @@
+// smart-resume\tsconfig.json
+
 {
   "compilerOptions": {
     "target": "ES2017",
@@ -20,18 +22,17 @@
     ],
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    // Add this to help TS find your custom definitions
+    "typeRoots": ["./node_modules/@types", "./types"]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
-    "**/*.mts",
-    ".next\\dev/types/**/*.ts",
-    ".next\\dev/types/**/*.ts",
-    "types/**/*.d.ts"
+    "types/**/*.d.ts",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }
