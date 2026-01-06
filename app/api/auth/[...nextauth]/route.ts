@@ -3,7 +3,6 @@
 import NextAuth from "next-auth";
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-
 import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
@@ -17,7 +16,6 @@ export const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-
         // basic sanity check
         if (!credentials?.email || !credentials?.password) {
           return null;
@@ -47,12 +45,27 @@ export const authOptions: AuthOptions = {
           name: user.name ?? user.email,
         };
       },
-      
     }),
   ],
 
   session: {
     strategy: "jwt",
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      // runs on login
+      if (user?.id) {
+        token.sub = user.id; // 👈 store Mongo user id in token
+      }
+      return token;
+    },
+
+    async session({ session, token }) {
+      if (session.user && token.sub) {
+        session.user.id = token.sub; //  expose to app
+      }
+      return session;
+    },
   },
 
   pages: {

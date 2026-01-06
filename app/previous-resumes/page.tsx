@@ -64,7 +64,7 @@ export default function PreviousResumePage() {
 
     setIsDeleting(true);
 
-    const res = await fetch(`/api/resume/${resumeToDelete}`, {
+    const res = await fetch(`/api/savedResumes/${resumeToDelete}`, {
       method: "DELETE",
     });
 

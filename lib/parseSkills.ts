@@ -86,7 +86,7 @@ export async function findSkillsInText(text: string): Promise<string[]> {
     if (skills.length > 0) {
       return skills;
     }
-  } catch (error) {
+  } catch  {
     console.warn("AI skill extraction failed, falling back to static list");
   }
   return fallbackSkillExtraction(text);

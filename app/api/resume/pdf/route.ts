@@ -1,11 +1,10 @@
+
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import puppeteer from "puppeteer";
-import path from "path";
-import fs from "fs/promises";
-
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectDB from "@/lib/mongodb";
+import Resume from "@/models/Resume";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 type PdfPayload = {
   fullName: string;
@@ -18,28 +17,22 @@ type PdfPayload = {
   skills: string;
 };
 
-export async function POST(req: NextRequest): Promise<NextResponse> {
-  
+export async function POST(req: NextRequest) {
+  /* ---------- AUTH ---------- */
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) {
+
+  if (!session?.user?.id || !session.user.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
+    /* ---------- INPUT ---------- */
     const body = (await req.json()) as PdfPayload;
 
+    /* ---------- DB ---------- */
     await connectDB();
 
-    // Ensure output directory exists
-    const outputDir = path.join(process.cwd(), "public", "generated-resumes");
-    await fs.mkdir(outputDir, { recursive: true });
-
-    // Unique filename
-    const safeName = body.fullName.replace(/\s+/g, "_").toLowerCase();
-    const fileName = `${safeName}-${Date.now()}.pdf`;
-    const filePath = path.join(outputDir, fileName);
-
-    // Launch Puppeteer
+    /* ---------- PUPPETEER ---------- */
     const browser = await puppeteer.launch({
       headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -47,7 +40,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     const page = await browser.newPage();
 
-    // Print-first HTML (ATS-safe)
     const html = `
       <!DOCTYPE html>
       <html>
@@ -97,11 +89,23 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     const pdfBuffer = Buffer.from(pdfUint8);
 
-    // Save to filesystem
-    await fs.writeFile(filePath, pdfBuffer);
+    const safeName = body.fullName.replace(/\s+/g, "_").toLowerCase();
+    const fileName = `${safeName}-${Date.now()}.pdf`;
 
-    // Save to DB (same collection as uploads)
+    /* ---------- SAVE TO MONGO ---------- */
+    await Resume.create({
+      userId: session.user.id,
+      name: body.fullName,
+      email: body.email,
+      fileName,
+      mimeType: "application/pdf",
+      fileData: pdfBuffer,
+      extractedText: "",
+      extractedSkills: [],
+      uploadedAt: new Date(),
+    });
 
+    /* ---------- RESPONSE ---------- */
     return new NextResponse(pdfBuffer, {
       headers: {
         "Content-Type": "application/pdf",
@@ -109,11 +113,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       },
     });
   } catch (error) {
-    console.error("PDF save error:", error);
+    console.error("PDF_GENERATION_ERROR:", error);
     return NextResponse.json(
       { error: "PDF generation failed" },
       { status: 500 }
     );
   }
 }
-

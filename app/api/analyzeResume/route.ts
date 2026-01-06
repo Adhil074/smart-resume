@@ -1,57 +1,114 @@
-//app\api\analyzeResume\route.ts
+
 
 import { NextRequest, NextResponse } from "next/server";
-import { MongoClient, ObjectId } from "mongodb";
-import { findSkillsInText } from "@/lib/parseSkills";
+import { getToken } from "next-auth/jwt";
+import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI || "";
+import connectDB from "@/lib/mongodb";
+import Resume from "@/models/Resume";
 
 export async function POST(req: NextRequest) {
   try {
-    const { resumeId } = await req.json();
+    /* ---------- AUTH ---------- */
+    const token = await getToken({
+      req,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
 
-    if (!resumeId) {
+    if (!token || !token.sub) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    /* ---------- INPUT ---------- */
+    const body = (await req.json()) as {
+      resumeId?: string;
+      extractedText?: string;
+    };
+
+    const { resumeId, extractedText } = body;
+
+    if (
+      !resumeId ||
+      !mongoose.Types.ObjectId.isValid(resumeId) ||
+      !extractedText ||
+      extractedText.trim().length < 50
+    ) {
       return NextResponse.json(
-        { error: "resumeId is required" },
+        { error: "Invalid input" },
         { status: 400 }
       );
     }
 
-    const client = new MongoClient(MONGODB_URI);
-    await client.connect();
+    /* ---------- DB ---------- */
+    await connectDB();
 
-    const db = client.db("resume_app_user");
-    const collection = db.collection("resumes");
-
-    const resume = await collection.findOne({
-      _id: new ObjectId(resumeId),
+    const resume = await Resume.findOne({
+      _id: resumeId,
+      userId: token.sub,
     });
 
     if (!resume) {
-      return NextResponse.json({ error: "Resume not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Resume not found" },
+        { status: 404 }
+      );
     }
 
-    const extractedText = resume.extractedText || "";
+    /* ---------- AI CALL (Gemini) ---------- */
+    const apiKey = process.env.GOOGLE_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: "AI key missing" },
+        { status: 500 }
+      );
+    }
 
-    // Use AI-powered extraction (with fallback)
-    const skills = await findSkillsInText(extractedText);
+    const prompt = `
+You are an ATS resume reviewer.
 
-    // Save skills to MongoDB
-    await collection.updateOne(
-      { _id: new ObjectId(resumeId) },
-      { $set: { extractedSkills: skills } } // Changed from "skills" to "extractedSkills"
+Analyze the resume text below and return:
+1. ATS score (0–100)
+2. Weak bullet points
+3. Structure / formatting issues
+4. Clear improvement suggestions
+
+Resume:
+${extractedText}
+`;
+
+    const aiRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+        }),
+      }
     );
 
-    await client.close();
+    if (!aiRes.ok) {
+      throw new Error("Gemini failed");
+    }
 
-    return NextResponse.json({ 
+    const aiData = await aiRes.json();
+    const aiText: string =
+      aiData.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+
+    /* ---------- SAVE ---------- */
+    resume.extractedText = extractedText;
+    resume.analysisResult = aiText;
+    await resume.save();
+
+    /* ---------- RESPONSE ---------- */
+    return NextResponse.json({
       success: true,
-      skills: skills 
+      analysis: aiText,
     });
-  } catch (error) {
-    console.error("Error analyzing resume:", error);
+  } catch (err) {
+    console.error("ANALYZE_RESUME_ERROR", err);
     return NextResponse.json(
-      { error: "Failed to analyze resume" },
+      { error: "Analysis failed" },
       { status: 500 }
     );
   }

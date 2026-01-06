@@ -1,3 +1,5 @@
+//smart-resume\lib\atsAnalyzer.ts
+
 export interface ATSScore {
   overallScore: number; // 0-100
   breakdown: {
