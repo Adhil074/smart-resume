@@ -6,13 +6,10 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectDB from "@/lib/mongodb";
 import Resume from "@/models/Resume";
 
-type RouteParams = {
-  params: {
-    id: string;
-  };
-};
-
-export async function GET(_request: Request, { params }: RouteParams) {
+export async function GET(
+  _request: Request,
+  context: { params: { id: string } }
+) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -22,8 +19,10 @@ export async function GET(_request: Request, { params }: RouteParams) {
 
     await connectDB();
 
+    const { id: resumeId } = await context.params;
+
     const resume = await Resume.findOne({
-      _id: params.id,
+      _id: resumeId,
       userId: session.user.id,
     });
 
@@ -41,34 +40,31 @@ export async function GET(_request: Request, { params }: RouteParams) {
   }
 }
 
-export async function DELETE(_request: Request, { params }: RouteParams) {
-  try {
-    const session = await getServerSession(authOptions);
+export async function DELETE(
+  _req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const session = await getServerSession(authOptions);
 
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    await connectDB();
-
-    const deletedResume = await Resume.findOneAndDelete({
-      _id: params.id,
-      userId: session.user.id,
-    });
-
-    if (!deletedResume) {
-      return NextResponse.json({ error: "Resume not found" }, { status: 404 });
-    }
-
-    return NextResponse.json(
-      { message: "Resume deleted successfully" },
-      { status: 200 }
-    );
-  } catch (error) {
-    console.error("DELETE /api/savedResumes/[id] error:", error);
-    return NextResponse.json(
-      { error: "Failed to delete resume" },
-      { status: 500 }
-    );
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  await connectDB();
+
+  const { id: resumeId } = await context.params;
+
+  const deletedResume = await Resume.findOneAndDelete({
+    _id: resumeId,
+    userId: session.user.id,
+  });
+
+  if (!deletedResume) {
+    return NextResponse.json({ error: "Resume not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(
+    { message: "Resume deleted successfully" },
+    { status: 200 }
+  );
 }

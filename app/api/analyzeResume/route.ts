@@ -1,4 +1,4 @@
-
+//app\api\analyzeResume\route.ts
 
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
@@ -19,24 +19,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+  
     /* ---------- INPUT ---------- */
     const body = (await req.json()) as {
       resumeId?: string;
-      extractedText?: string;
     };
 
-    const { resumeId, extractedText } = body;
+    const { resumeId } = body;
 
-    if (
-      !resumeId ||
-      !mongoose.Types.ObjectId.isValid(resumeId) ||
-      !extractedText ||
-      extractedText.trim().length < 50
-    ) {
-      return NextResponse.json(
-        { error: "Invalid input" },
-        { status: 400 }
-      );
+    if (!resumeId || !mongoose.Types.ObjectId.isValid(resumeId)) {
+      return NextResponse.json({ error: "Invalid resume id" }, { status: 400 });
     }
 
     /* ---------- DB ---------- */
@@ -47,33 +39,28 @@ export async function POST(req: NextRequest) {
       userId: token.sub,
     });
 
-    if (!resume) {
-      return NextResponse.json(
-        { error: "Resume not found" },
-        { status: 404 }
-      );
+    if (!resume || !resume.fileData) {
+      return NextResponse.json({ error: "Resume not found" }, { status: 404 });
     }
 
-    /* ---------- AI CALL (Gemini) ---------- */
+    
+    /* ---------- AI (Gemini PDF Analysis) ---------- */
+
     const apiKey = process.env.GOOGLE_API_KEY;
     if (!apiKey) {
-      return NextResponse.json(
-        { error: "AI key missing" },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "AI key missing" }, { status: 500 });
     }
+
+    const base64Pdf = resume.fileData.toString("base64");
 
     const prompt = `
 You are an ATS resume reviewer.
 
-Analyze the resume text below and return:
+Analyze the resume and return:
 1. ATS score (0–100)
 2. Weak bullet points
-3. Structure / formatting issues
+3. Formatting issues
 4. Clear improvement suggestions
-
-Resume:
-${extractedText}
 `;
 
     const aiRes = await fetch(
@@ -82,21 +69,34 @@ ${extractedText}
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
+          contents: [
+            {
+              parts: [
+                { text: prompt },
+                {
+                  inlineData: {
+                    mimeType: resume.mimeType,
+                    data: base64Pdf,
+                  },
+                },
+              ],
+            },
+          ],
         }),
       }
     );
 
     if (!aiRes.ok) {
-      throw new Error("Gemini failed");
+      throw new Error("Gemini API failed");
     }
 
     const aiData = await aiRes.json();
+
     const aiText: string =
       aiData.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
 
     /* ---------- SAVE ---------- */
-    resume.extractedText = extractedText;
+    // resume.extractedText = extractedText;
     resume.analysisResult = aiText;
     await resume.save();
 
@@ -107,9 +107,6 @@ ${extractedText}
     });
   } catch (err) {
     console.error("ANALYZE_RESUME_ERROR", err);
-    return NextResponse.json(
-      { error: "Analysis failed" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Analysis failed" }, { status: 500 });
   }
 }

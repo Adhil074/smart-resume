@@ -1,4 +1,4 @@
-
+//smart-resume\models\Resume.ts
 
 import mongoose, { Schema, Types } from "mongoose";
 
@@ -12,6 +12,7 @@ export interface ResumeDocument {
   fileData: Buffer;
   extractedText: string;
   extractedSkills: string[];
+  analysisResult: string;
   uploadedAt: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -56,6 +57,10 @@ const resumeSchema = new Schema<ResumeDocument>(
       type: [String],
       default: [],
     },
+    analysisResult: {
+      type: String,
+      default: "",
+    },
     uploadedAt: {
       type: Date,
       default: Date.now,
@@ -66,7 +71,6 @@ const resumeSchema = new Schema<ResumeDocument>(
   }
 );
 
-const Resume =
-  mongoose.models.Resume || mongoose.model("Resume", resumeSchema);
+const Resume = mongoose.models.Resume || mongoose.model("Resume", resumeSchema);
 
 export default Resume;
