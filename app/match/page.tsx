@@ -1,3 +1,5 @@
+//app\match\page.tsx
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -29,7 +31,12 @@ export default function MatchPage() {
         setError(null);
 
         // 1) Get latest resume (already sorted by uploadedAt: -1 in /api/resume)
-        const resRes = await fetch("/api/resume");
+        // const resRes = await fetch("/api/resume");
+        // const resumeData = await resRes.json();
+        // const latestResume: ResumeDoc | undefined = resumeData.resumes?.[0];
+        const resRes = await fetch("/api/savedResumes", {
+          credentials: "include",
+        });
         const resumeData = await resRes.json();
         const latestResume: ResumeDoc | undefined = resumeData.resumes?.[0];
 

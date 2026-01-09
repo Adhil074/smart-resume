@@ -18,7 +18,14 @@ export async function GET() {
 
     const resumes = await Resume.find({
       userId: session.user.id,
-    }).sort({ uploadedAt: -1 });
+    })
+    .sort({ uploadedAt: -1 });
+    // const resumes = await Resume.find({
+    //   userId: session.user.id,
+    //   extractedSkills: { $exists: true, $ne: [] },
+    // })
+    //   .sort({ uploadedAt: -1 })
+    //   .select("extractedSkills uploadedAt");
 
     return NextResponse.json({ resumes }, { status: 200 });
   } catch (error) {

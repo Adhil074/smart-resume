@@ -1,77 +1,79 @@
-import { NextResponse } from "next/server";
+// //app\api\jd\analyze\route.ts
 
-export async function POST(request: Request) {
-  const { jdText } = await request.json();
+// import { NextResponse } from "next/server";
 
-  if (!jdText || jdText.trim() === "") {
-    return NextResponse.json({ error: "No JD text provided" }, { status: 400 });
-  }
+// export async function POST(request: Request) {
+//   const { jdText } = await request.json();
 
-  try {
-    const res = await fetch(
-      "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" +
-        process.env.GOOGLE_API_KEY,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: `Extract ONLY skills from this job description.
-Return them as a clean JSON array of strings. No extra text.
+//   if (!jdText || jdText.trim() === "") {
+//     return NextResponse.json({ error: "No JD text provided" }, { status: 400 });
+//   }
 
-JD:
-${jdText}`,
-                },
-              ],
-            },
-          ],
-        }),
-      }
-    );
+//   try {
+//     const res = await fetch(
+//       "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" +
+//         process.env.GOOGLE_API_KEY,
+//       {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({
+//           contents: [
+//             {
+//               parts: [
+//                 {
+//                   text: `Extract ONLY skills from this job description.
+// Return them as a clean JSON array of strings. No extra text.
 
-    const data = await res.json();
-    console.log("GEMINI RAW RESPONSE:", JSON.stringify(data, null, 2));
-    let text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
+// JD:
+// ${jdText}`,
+//                 },
+//               ],
+//             },
+//           ],
+//         }),
+//       }
+//     );
 
-    // Clean ```json ... ``` wrapper if present
-    text = text.trim();
-    if (text.startsWith("```")) {
-      text = text
-        .replace(/^```[a-zA-Z]*\n?/, "") // remove ```json or ``` plus first newline
-        .replace(/```$/, "") // remove closing ```
-        .trim();
-    }
+//     const data = await res.json();
+//     console.log("GEMINI RAW RESPONSE:", JSON.stringify(data, null, 2));
+//     let text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
 
-    // let skills: string[] = [];
+//     // Clean ```json ... ``` wrapper if present
+//     text = text.trim();
+//     if (text.startsWith("```")) {
+//       text = text
+//         .replace(/^```[a-zA-Z]*\n?/, "") // remove ```json or ``` plus first newline
+//         .replace(/```$/, "") // remove closing ```
+//         .trim();
+//     }
 
-    type SkillsJSON = string[] | { skills: string[] };
+//     // let skills: string[] = [];
 
-    let skills: string[] = [];
+//     type SkillsJSON = string[] | { skills: string[] };
 
-    try {
-      const parsed = JSON.parse(text) as SkillsJSON;
+//     let skills: string[] = [];
 
-      if (Array.isArray(parsed)) {
-        skills = parsed;
-      } else if (parsed && Array.isArray(parsed.skills)) {
-        skills = parsed.skills;
-      }
-    } catch {
-      // Fallback: split lines/commas if JSON.parse still fails
-      skills = text
-        .split(/[\n,]/)
-        .map((s: string) => s.trim())
-        .filter(Boolean);
-    }
+//     try {
+//       const parsed = JSON.parse(text) as SkillsJSON;
 
-    return NextResponse.json({ skills });
-  } catch {
-    return NextResponse.json(
-      { error: "AI extraction failed" },
-      { status: 500 }
-    );
-  }
-}
+//       if (Array.isArray(parsed)) {
+//         skills = parsed;
+//       } else if (parsed && Array.isArray(parsed.skills)) {
+//         skills = parsed.skills;
+//       }
+//     } catch {
+//       // Fallback: split lines/commas if JSON.parse still fails
+//       skills = text
+//         .split(/[\n,]/)
+//         .map((s: string) => s.trim())
+//         .filter(Boolean);
+//     }
+
+//     return NextResponse.json({ skills });
+//   } catch {
+//     return NextResponse.json(
+//       { error: "AI extraction failed" },
+//       { status: 500 }
+//     );
+//   }
+// }

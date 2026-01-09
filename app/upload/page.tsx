@@ -73,9 +73,9 @@ export default function UploadPage() {
     }
   }
   return (
-    <div className="min-h-screen bg-slate-900 flex justify-center pt-16 px-4">
-      <div className="w-full max-w-2xl bg-slate-100 rounded-xl shadow-lg p-6">
-        <h1 className="text-xl font-semibold text-slate-800 mb-4">
+    <div className="min-h-screen bg-slate-900   pt-16 px-4">
+      <div className="w-full max-w-5xl flex flex-col items-center justify-center bg-slate-100 rounded-xl shadow-lg p-6">
+        <h1 className="text-xl font-semibold text-center text-slate-800 mb-4">
           Upload Resume
         </h1>
 
@@ -84,7 +84,7 @@ export default function UploadPage() {
           type="file"
           accept=".pdf,.docx"
           onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-          className="w-full border border-slate-300 rounded px-3 py-2 bg-white"
+          className="w-2xl border border-slate-300 text-black rounded px-3 py-2 bg-white"
         />
 
         {file && (
@@ -93,11 +93,13 @@ export default function UploadPage() {
           </p>
         )}
 
+        
+
         {/* UPLOAD BUTTON */}
         <button
           onClick={handleUpload}
           disabled={!file || loading}
-          className="w-full mt-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-2 rounded"
+          className="w-2xl mt-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-2 rounded"
         >
           {loading ? "Uploading..." : "Upload"}
         </button>
@@ -110,7 +112,7 @@ export default function UploadPage() {
         {!uploadSuccess && (
           <button
             disabled
-            className="w-full mt-6 bg-gray-400 text-white py-2 rounded font-semibold cursor-not-allowed"
+            className="w-2xl mt-6 bg-gray-400 text-white py-2 rounded font-semibold cursor-not-allowed"
           >
             Upload resume to check match
           </button>
