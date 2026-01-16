@@ -37,6 +37,7 @@ ${text}
 
 Return ONLY the JSON array, nothing else.`;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let lastError: any;
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
     try {

@@ -1,3 +1,5 @@
+// app\upload\page.tsx
+
 "use client";
 
 import { useState } from "react";
@@ -65,6 +67,8 @@ export default function UploadPage() {
         throw new Error(data.error || "Analysis failed");
       }
 
+      sessionStorage.setItem("resumeAnalyzed", "true");
+      // sessionStorage.setItem("analyzedResumeId",resumeId);
       setAnalysis(data.analysis);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Analysis failed");
@@ -92,8 +96,6 @@ export default function UploadPage() {
             File selected: {file.name}
           </p>
         )}
-
-        
 
         {/* UPLOAD BUTTON */}
         <button
@@ -138,7 +140,7 @@ export default function UploadPage() {
               </button>
 
               <button
-                onClick={() => router.push("/upload-jd")}
+                onClick={() => router.push("/upload-jd?mode=match")}
                 className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded font-semibold"
               >
                 Upload JD to check match

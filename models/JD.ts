@@ -1,18 +1,6 @@
-// //models\JD.ts
+//models\JD.ts
 
-// import mongoose from "mongoose";
-// const jdSchema = new mongoose.Schema({
-//   text: String,
-//   extractedSkills: { type: [String], default: [] },
-//   createdAt: {
-//     type: Date,
-//     default: Date.now,
-//   },
-// });
-// const JD=mongoose.models.JD||mongoose.model("JD",jdSchema);
-// export default JD;
-
-import mongoose, { Schema, Types } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const jdSchema = new Schema(
   {

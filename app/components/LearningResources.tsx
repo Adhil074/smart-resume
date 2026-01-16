@@ -1,3 +1,5 @@
+//app\components\LearningResources.tsx
+
 "use client";
 
 type ResourceLinks = {

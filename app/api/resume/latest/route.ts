@@ -22,6 +22,8 @@
 //   }
 // }
 
+//app\api\resume\latest\route.ts
+
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
@@ -40,7 +42,8 @@ export async function GET() {
   const resume = await Resume.findOne({
     userId: session.user.id,
   })
-    .sort({ uploadedAt: -1 }) // ✅ THIS IS THE KEY
+    // .sort({ uploadedAt: -1 }) 
+    .sort({ createdAt: -1 }) 
     .lean();
 
   return NextResponse.json({ resume });

@@ -9,6 +9,7 @@ if (!MONGODB_URI) {
 // Extend the global namespace to include mongoose cache with proper types
 declare global {
   var mongoose: {
+    connection: any;
     conn: typeof mongoose | null;
     promise: Promise<typeof mongoose> | null;
   };
