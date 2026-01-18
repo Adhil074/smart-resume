@@ -1,3 +1,5 @@
+//app\components\ResumeTemplate.tsx
+
 "use client";
 
 interface ResumeTemplateProps {

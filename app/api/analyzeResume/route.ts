@@ -8,6 +8,13 @@ import { extractText } from "unpdf";
 import connectDB from "@/lib/mongodb";
 import Resume from "@/models/Resume";
 
+function normalizeMarkdown(text: string) {
+  return text
+    .replace(/\n{3,}/g, "\n\n") // collapse excessive newlines
+    .replace(/([^\n])\n([^\n])/g, "$1\n\n$2") // force paragraph breaks
+    .trim();
+}
+
 const GEMINI_URL =
   "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" +
   process.env.GOOGLE_API_KEY;
@@ -114,9 +121,7 @@ export async function POST(req: NextRequest) {
       throw new Error("Resume validation failed");
     }
 
-    /* =====================================================
-       2 ATS ANALYSIS (Gemini → Groq fallback)
-    ===================================================== */
+    //ats analysis and feedback
 
     let analysisText = "";
 
@@ -164,6 +169,7 @@ Return:
       ) {
         throw new Error("Gemini ATS invalid");
       }
+      //fallback to groq if gemini fails or rate limits
     } catch {
       const groqRes = await fetch(GROQ_URL, {
         method: "POST",
@@ -195,7 +201,10 @@ ${extractedText}
       });
 
       const groqData = await groqRes.json();
-      analysisText = groqData?.choices?.[0]?.message?.content ?? "";
+      // analysisText = groqData?.choices?.[0]?.message?.content ?? "";
+      analysisText = normalizeMarkdown(
+        groqData?.choices?.[0]?.message?.content ?? ""
+      );
     }
 
     /* =====================================================

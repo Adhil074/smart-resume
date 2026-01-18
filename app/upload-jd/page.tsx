@@ -145,7 +145,7 @@ export default function UploadJDPage() {
             </h2>
 
             <div className="bg-white rounded-lg p-6 mb-8">
-              <p className="text-lg font-semibold mb-4">
+              <p className="text-lg text-black font-semibold mb-4">
                 Match Score:{" "}
                 <span className="text-green-600">{matchPercent}%</span>
               </p>
@@ -153,7 +153,7 @@ export default function UploadJDPage() {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="font-semibold mb-2 text-slate-700">
-                    Matched Skills
+                    Matched Skills - Keywords
                   </h3>
                   <ul className="list-disc list-inside text-green-700">
                     {matchedSkills.map((s) => (
@@ -164,7 +164,7 @@ export default function UploadJDPage() {
 
                 <div>
                   <h3 className="font-semibold mb-2 text-slate-700">
-                    Missing Skills
+                    Missing Skills - Keywords
                   </h3>
                   <ul className="list-disc list-inside text-red-600">
                     {missingSkills.map((s) => (
