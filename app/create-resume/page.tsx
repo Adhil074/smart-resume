@@ -5,6 +5,8 @@ import { useState } from "react";
 import TemplateA from "@/app/components/preview/TemplateA";
 import TemplateB from "@/app/components/preview/TemplateB";
 import TemplateCard from "../components/template/TemplateCard";
+import TemplateAThumbnail from "@/app/components/template/TemplateAThumbnail";
+import TemplateBThumbnail from "@/app/components/template/TemplateBThumbnail";
 
 type ResumeData = {
   fullName: string;
@@ -12,7 +14,10 @@ type ResumeData = {
   phone: string;
   summary: string;
   skills: string;
-  education:string;
+  education: string;
+  experience: string;
+  projects: string;
+  certifications: string;
 };
 
 export default function CreateResumePage() {
@@ -27,7 +32,10 @@ export default function CreateResumePage() {
     phone: "",
     summary: "",
     skills: "",
-    education:"",
+    education: "",
+    experience: "",
+    projects: "",
+    certifications: "",
   });
 
   const [templateBData, setTemplateBData] = useState<ResumeData>({
@@ -36,7 +44,10 @@ export default function CreateResumePage() {
     phone: "",
     summary: "",
     skills: "",
-    education:"",
+    education: "",
+    experience: "",
+    projects: "",
+    certifications: "",
   });
 
   const activeData = template === "templateA" ? templateAData : templateBData;
@@ -75,33 +86,37 @@ export default function CreateResumePage() {
           Create New Resume
         </h1>
 
-        {/* Template Selection */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-          <TemplateCard
-            selected={template === "templateA"}
-            onClick={() => setTemplate("templateA")}
-          >
-            <TemplateA
-              fullName="Your Name"
-              email="email@example.com"
-              phone="9876543210"
-              summary="Short professional summary goes here..."
-              skills="React, Next.js, TypeScript"
-            />
-          </TemplateCard>
+        <p className="text-center text-slate-200 mt-2 mb-3">Select Template</p>
 
-          <TemplateCard
-            selected={template === "templateB"}
-            onClick={() => setTemplate("templateB")}
-          >
-            <TemplateB
-              fullName="Your Name"
-              email="email@example.com"
-              phone="9876543210"
-              summary="Career objective shown in modern style..."
-              skills="Node.js, MongoDB, React"
-            />
-          </TemplateCard>
+        {/* Template Selection */}
+        <div className="flex justify-center gap-6 mb-8">
+          {/* Template A */}
+          <div className="flex flex-col items-center gap-2">
+            <TemplateCard
+              selected={template === "templateA"}
+              onClick={() => setTemplate("templateA")}
+            >
+              <TemplateAThumbnail />
+            </TemplateCard>
+
+            <p className="w-[260px] text-center text-sm text-white font-semibold">
+              Professional Classic
+            </p>
+          </div>
+
+          {/* Template B */}
+          <div className="flex flex-col items-center gap-2">
+            <TemplateCard
+              selected={template === "templateB"}
+              onClick={() => setTemplate("templateB")}
+            >
+              <TemplateBThumbnail />
+            </TemplateCard>
+
+            <p className="w-[260px] text-center text-sm font-semibold text-white ">
+              Modern Career
+            </p>
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 text-black">
@@ -147,6 +162,27 @@ export default function CreateResumePage() {
               placeholder="Education"
               value={activeData.education}
               onChange={(e) => setActiveData({ education: e.target.value })}
+              className="w-full border p-2 min-h-20"
+            />
+
+            <textarea
+              placeholder="Experience"
+              value={activeData.experience}
+              onChange={(e) => setActiveData({ experience: e.target.value })}
+              className="w-full border p-2 min-h-20"
+            />
+            <textarea
+              placeholder="Projects"
+              value={activeData.projects}
+              onChange={(e) => setActiveData({ projects: e.target.value })}
+              className="w-full border p-2 min-h-20"
+            />
+            <textarea
+              placeholder="Certifications"
+              value={activeData.certifications}
+              onChange={(e) =>
+                setActiveData({ certifications: e.target.value })
+              }
               className="w-full border p-2 min-h-20"
             />
           </div>

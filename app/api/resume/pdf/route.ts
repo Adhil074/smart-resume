@@ -13,6 +13,10 @@ type PdfPayload = {
   phone: string;
   summary: string;
   skills: string;
+  education: string;
+  experience: string;
+  projects: string;
+  certifications: string;
   template: "templateA" | "templateB";
 };
 
@@ -71,6 +75,7 @@ export async function POST(req: NextRequest) {
               p {
                 font-size: 12px;
                 margin: 6px 0;
+                white-space: pre-line;
               }
             </style>
           </head>
@@ -87,6 +92,18 @@ export async function POST(req: NextRequest) {
 
             <h2>Skills</h2>
             <p>${body.skills}</p>
+
+            <h2>Education</h2>
+    <p>${body.education}</p>
+
+    <h2>Experience</h2>
+    <p>${body.experience}</p>
+
+    <h2>Projects</h2>
+    <p>${body.projects}</p>
+
+    <h2>Certifications</h2>
+    <p>${body.certifications}</p>
           </body>
         </html>
       `;
@@ -124,6 +141,7 @@ export async function POST(req: NextRequest) {
               p {
                 font-size: 12px;
                 margin: 4px 0;
+                white-space: pre-line;
               }
             </style>
           </head>
@@ -139,6 +157,18 @@ export async function POST(req: NextRequest) {
 
             <h2>Skills</h2>
             <p>${body.skills}</p>
+
+            <h2>Education</h2>
+    <p>${body.education}</p>
+
+    <h2>Experience</h2>
+    <p>${body.experience}</p>
+
+    <h2>Projects</h2>
+    <p>${body.projects}</p>
+
+    <h2>Certifications</h2>
+    <p>${body.certifications}</p>
           </body>
         </html>
       `;

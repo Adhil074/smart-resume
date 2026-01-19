@@ -1,4 +1,4 @@
-
+//smart-resume\models\User.ts
 
 import mongoose, { Schema, Model } from "mongoose";
 

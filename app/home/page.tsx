@@ -1,3 +1,5 @@
+//app\home\page.tsx
+
 "use client";
 
 import Link from "next/link";
@@ -54,7 +56,7 @@ export default function HomePage() {
 
           {/* Welcome Text - Center */}
           <h2 className="text-2xl font-semibold text-slate-900 absolute left-1/2 transform -translate-x-1/2">
-            Welcome, <span className="text-blue-600">{username}</span>
+            Welcome back, <span className="text-blue-600">{username}</span>
           </h2>
 
           {/* Empty space for right alignment */}

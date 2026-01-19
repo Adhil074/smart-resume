@@ -34,7 +34,7 @@ export const authOptions: AuthOptions = {
         // compare hashed passwords
         const isValid = await bcrypt.compare(
           credentials.password,
-          user.password
+          user.password,
         );
         if (!isValid) return null;
 
@@ -55,14 +55,23 @@ export const authOptions: AuthOptions = {
     async jwt({ token, user }) {
       // runs on login
       if (user?.id) {
-        token.sub = user.id; // 👈 store Mongo user id in token
+        token.sub = user.id;
+        token.name = user.name;
+        token.email = user.email; // 👈 store Mongo user id in token
       }
       return token;
     },
 
+    // async session({ session, token }) {
+    //   if (session.user && token.sub) {
+    //     session.user.id = token.sub; //  expose to app
+    //   }
+    //   return session;
     async session({ session, token }) {
-      if (session.user && token.sub) {
-        session.user.id = token.sub; //  expose to app
+      if (session.user) {
+        session.user.id = token.sub as string;
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
       }
       return session;
     },
@@ -77,5 +86,3 @@ export const authOptions: AuthOptions = {
 
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
-
-

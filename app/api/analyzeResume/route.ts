@@ -54,14 +54,12 @@ export async function POST(req: NextRequest) {
     let extractedText = resume.extractedText ?? "";
 
     const base64Pdf = resume.fileData.toString("base64");
-    /* =====================================================
-    1 TEXT EXTRACTION (Gemini → unpdf fallback)
-    ===================================================== */
+
+    //text extraction
 
     let textExtracted = false;
-
     if (!extractedText) {
-      // 1️⃣ Try Gemini first
+      //try gemini first
       try {
         const textRes = await fetch(GEMINI_URL, {
           method: "POST",
@@ -94,11 +92,11 @@ export async function POST(req: NextRequest) {
           throw new Error("Gemini text weak");
         }
       } catch {
-        // 2️⃣ Fallback: unpdf (REAL text, no hallucination)
+        // fallback (unpdf)
         const uint8 = new Uint8Array(
           resume.fileData instanceof Buffer
             ? resume.fileData
-            : Buffer.from(resume.fileData)
+            : Buffer.from(resume.fileData),
         );
 
         const result = await extractText(uint8);
@@ -115,7 +113,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    /* ---------- FINAL VALIDATION (ONLY FAIL IF BOTH FAILED) ---------- */
+    //final validation if both fail
 
     if (!extractedText || extractedText.length < 300) {
       throw new Error("Resume validation failed");
@@ -203,7 +201,7 @@ ${extractedText}
       const groqData = await groqRes.json();
       // analysisText = groqData?.choices?.[0]?.message?.content ?? "";
       analysisText = normalizeMarkdown(
-        groqData?.choices?.[0]?.message?.content ?? ""
+        groqData?.choices?.[0]?.message?.content ?? "",
       );
     }
 
