@@ -7,7 +7,7 @@ import Resume from "@/models/Resume";
 
 export async function POST(req: NextRequest) {
   try {
-    /* ---------- AUTH ---------- */
+    //auth
     const token = await getToken({
       req,
       secret: process.env.NEXTAUTH_SECRET,
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    /* ---------- FORM DATA ---------- */
+    //form data
     const formData = await req.formData();
     const file = formData.get("file");
 
@@ -33,15 +33,15 @@ export async function POST(req: NextRequest) {
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
         { error: "Only PDF or DOCX allowed" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    /* ---------- FILE BUFFER (THIS WAS MISSING) ---------- */
+    //file buffer
     const arrayBuffer = await file.arrayBuffer();
     const fileBuffer = Buffer.from(arrayBuffer);
 
-    /* ---------- DB ---------- */
+    //db
     await connectDB();
 
     const resume = await Resume.create({
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
       email: token.email,
       fileName: file.name,
       fileData: fileBuffer,
-      mimeType: file.type,  
+      mimeType: file.type,
       extractedText: "",
       extractedSkills: [],
     });
@@ -64,4 +64,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
 }
-

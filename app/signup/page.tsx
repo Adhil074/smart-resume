@@ -31,7 +31,7 @@ export default function SignupPage() {
       return;
     }
 
-    // Signup worked → redirect to login page
+    // if signup worked  redirects to login page
     router.push("/login");
   }
 

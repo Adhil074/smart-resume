@@ -68,7 +68,7 @@ export default function UploadPage() {
       }
 
       sessionStorage.setItem("resumeAnalyzed", "true");
-      // sessionStorage.setItem("analyzedResumeId",resumeId);
+
       setAnalysis(data.analysis);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Analysis failed");
@@ -76,120 +76,152 @@ export default function UploadPage() {
       setAnalyzing(false);
     }
   }
+
   return (
-    <div className="min-h-screen bg-slate-900   pt-16 px-4">
-      <div className="w-full max-w-5xl flex flex-col items-center justify-center bg-slate-100 rounded-xl shadow-lg p-6">
-        <h1 className="text-xl font-semibold text-center text-slate-800 mb-4">
+    <div className="min-h-screen bg-slate-900 pt-16 px-4">
+      {/* back button */}
+      <button
+        onClick={() => router.back()}
+        aria-label="Go back"
+        className="absolute top-6 left-6 w-10 h-10 rounded-full
+      bg-slate-900/60 backdrop-blur-md text-white
+      flex items-center justify-center
+      border border-white/40
+      hover:bg-slate-900/80 hover:scale-105 transition"
+      >
+        ←
+      </button>
+
+      {/* main container */}
+      <div className="w-full max-w-6xl mx-auto bg-slate-100 rounded-2xl shadow-xl p-5 sm:p-6 lg:p-8">
+        <h1 className="text-xl font-semibold text-center text-slate-800 mb-6">
           Upload Resume
         </h1>
 
-        {/* FILE INPUT */}
-        <input
-          type="file"
-          accept=".pdf,.docx"
-          onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-          className="w-2xl border border-slate-300 text-black rounded px-3 py-2 bg-white"
-        />
+        {/* upload section */}
+        <div className="flex flex-col items-center gap-4">
+          <input
+            type="file"
+            accept=".pdf,.docx"
+            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+            className="w-full max-w-md border border-slate-300 text-black rounded-lg px-4 py-2 bg-white"
+          />
 
-        {file && (
-          <p className="mt-2 text-sm text-green-700">
-            File selected: {file.name}
-          </p>
-        )}
+          {file && (
+            <p className="text-sm text-green-700">File selected: {file.name}</p>
+          )}
 
-        {/* UPLOAD BUTTON */}
-        <button
-          onClick={handleUpload}
-          disabled={!file || loading}
-          className="w-2xl mt-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-2 rounded"
-        >
-          {loading ? "Uploading..." : "Upload"}
-        </button>
+          {error && <p className="text-sm text-red-600 font-medium">{error}</p>}
 
-        {error && (
-          <p className="mt-3 text-sm text-red-600 font-medium">{error}</p>
-        )}
+          {/* before upload */}
+          {!uploadSuccess && (
+            <div className="mt-6 w-full max-w-3xl mx-auto">
+              {/* button row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button
+                  onClick={handleUpload}
+                  disabled={!file || loading}
+                  className="
+          bg-blue-600 hover:bg-blue-700
+          disabled:opacity-60
+          text-white font-semibold
+          py-3 rounded-xl
+          transition
+        "
+                >
+                  {loading ? "Uploading..." : "Upload"}
+                </button>
 
-        {/* BEFORE UPLOAD */}
-        {!uploadSuccess && (
-          <button
-            disabled
-            className="w-2xl mt-6 bg-gray-400 text-white py-2 rounded font-semibold cursor-not-allowed"
-          >
-            Upload resume to check match
-          </button>
-        )}
-
-        {/* AFTER UPLOAD */}
-        {uploadSuccess && resumeId && (
-          <>
-            {/* PREVIEW */}
-            <iframe
-              src={`/api/resume/preview/${resumeId}`}
-              className="w-full h-[520px] mt-6 border rounded bg-black"
-            />
-
-            {/* ACTION BUTTONS */}
-            <div className="flex gap-4 mt-4">
-              <button
-                onClick={handleAnalyze}
-                disabled={analyzing}
-                className="flex-1 bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white py-2 rounded font-semibold"
-              >
-                {analyzing ? "Analyzing..." : "Analyze Resume"}
-              </button>
-
-              <button
-                onClick={() => router.push("/upload-jd?mode=match")}
-                className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded font-semibold"
-              >
-                Upload JD to check match
-              </button>
+                <button
+                  disabled
+                  className="
+          bg-gray-400
+          text-white font-semibold
+          py-3 rounded-xl
+          cursor-not-allowed
+        "
+                >
+                  Upload resume to check match
+                </button>
+              </div>
             </div>
+          )}
+        </div>
+
+        {/* after upload*/}
+        {uploadSuccess && resumeId && (
+          <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* left panel */}
+            <div className="flex flex-col gap-4">
+              <div className="bg-white rounded-xl border shadow overflow-hidden">
+                <div className="px-4 py-2 text-sm font-semibold text-slate-700 border-b">
+                  Resume Preview
+                </div>
+                <iframe
+                  src={`/api/resume/preview/${resumeId}`}
+                  className="w-full h-[420px] lg:h-[520px] bg-black"
+                />
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button
+                  onClick={handleAnalyze}
+                  disabled={analyzing}
+                  className="flex-1 bg-green-600 hover:bg-green-700
+                disabled:opacity-60 text-white py-2 rounded-lg font-semibold transition"
+                >
+                  {analyzing ? "Analyzing..." : "Analyze Resume"}
+                </button>
+
+                <button
+                  onClick={() => router.push("/upload-jd?mode=match")}
+                  className="flex-1 bg-orange-500 hover:bg-orange-600
+                text-white py-2 rounded-lg font-semibold transition"
+                >
+                  Upload JD to check match
+                </button>
+              </div>
+            </div>
+
+            {/* right panel */}
             {analysis && (
-              <div className="mt-6 bg-white rounded-lg p-4 shadow border">
-                <h2 className="text-lg font-semibold text-slate-800 mb-2">
+              <div className="bg-white rounded-xl shadow border p-5 sm:p-6 overflow-y-auto max-h-[520px]">
+                <h2 className="text-lg font-semibold text-slate-800 mb-4">
                   ATS Analysis Result
                 </h2>
 
                 <ReactMarkdown
                   components={{
                     h2: ({ children }) => (
-                      <div className="mt-8 mb-4 rounded-xl bg-slate-50 border border-slate-200 px-5 py-4">
-                        <h2 className="text-lg font-semibold text-slate-900 mb-2">
+                      <div className="mt-6 mb-4 rounded-lg bg-slate-50 border px-4 py-3">
+                        <h2 className="text-base font-semibold text-slate-900">
                           {children}
                         </h2>
                       </div>
                     ),
-
                     h3: ({ children }) => (
-                      <h3 className="text-base font-semibold text-slate-800 mt-5 mb-2">
+                      <h3 className="text-sm font-semibold text-slate-800 mt-4 mb-2">
                         {children}
                       </h3>
                     ),
-
                     p: ({ children }) => (
-                      <p className="text-slate-700 leading-relaxed mb-3 px-1">
+                      <p className="text-sm text-slate-700 leading-relaxed mb-3">
                         {children}
                       </p>
                     ),
-
                     ul: ({ children }) => (
-                      <ul className="list-disc pl-6 mb-4 text-slate-700">
+                      <ul className="list-disc pl-5 mb-4 text-sm text-slate-700">
                         {children}
                       </ul>
                     ),
-
                     li: ({ children }) => <li className="mb-1">{children}</li>,
-
                     strong: ({ children }) => (
                       <strong className="text-slate-900 font-semibold">
                         {children}
                       </strong>
                     ),
-
                     hr: () => (
-                      <div className="my-6 border-t border-slate-300" />
+                      <div className="my-5 border-t border-slate-300" />
                     ),
                   }}
                 >
@@ -197,7 +229,7 @@ export default function UploadPage() {
                 </ReactMarkdown>
               </div>
             )}
-          </>
+          </div>
         )}
       </div>
     </div>

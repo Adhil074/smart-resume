@@ -21,7 +21,7 @@ export const authOptions: AuthOptions = {
           return null;
         }
 
-        // ensure DB connection (using your connectDB helper)
+        // ensures DB connection (using connectDB helper)
         await connectDB();
 
         // find user using Mongoose User model (normalize email)
@@ -31,14 +31,14 @@ export const authOptions: AuthOptions = {
         // not found
         if (!user) return null;
 
-        // compare hashed passwords
+        // compares hashed passwords
         const isValid = await bcrypt.compare(
           credentials.password,
           user.password,
         );
         if (!isValid) return null;
 
-        // return the object NextAuth expects (id must be string)
+        // returns the object NextAuth expects (id must be string)
         return {
           id: user._id.toString(),
           email: user.email,
@@ -57,16 +57,11 @@ export const authOptions: AuthOptions = {
       if (user?.id) {
         token.sub = user.id;
         token.name = user.name;
-        token.email = user.email; // 👈 store Mongo user id in token
+        token.email = user.email; // this stores Mongo user id in token
       }
       return token;
     },
 
-    // async session({ session, token }) {
-    //   if (session.user && token.sub) {
-    //     session.user.id = token.sub; //  expose to app
-    //   }
-    //   return session;
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.sub as string;
@@ -78,7 +73,7 @@ export const authOptions: AuthOptions = {
   },
 
   pages: {
-    signIn: "/login", // your custom login page route
+    signIn: "/login", // custom login page route
   },
 
   secret: process.env.NEXTAUTH_SECRET,

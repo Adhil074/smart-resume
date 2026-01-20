@@ -10,8 +10,8 @@ import Resume from "@/models/Resume";
 
 function normalizeMarkdown(text: string) {
   return text
-    .replace(/\n{3,}/g, "\n\n") // collapse excessive newlines
-    .replace(/([^\n])\n([^\n])/g, "$1\n\n$2") // force paragraph breaks
+    .replace(/\n{3,}/g, "\n\n") //this collapse excessive newlines
+    .replace(/([^\n])\n([^\n])/g, "$1\n\n$2") //this force paragraph breaks
     .trim();
 }
 
@@ -23,7 +23,7 @@ const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 export async function POST(req: NextRequest) {
   try {
-    /* ---------- AUTH ---------- */
+    //auth
     const token = await getToken({
       req,
       secret: process.env.NEXTAUTH_SECRET,
@@ -33,14 +33,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    /* ---------- INPUT ---------- */
+   //input
     const { resumeId } = (await req.json()) as { resumeId?: string };
 
     if (!resumeId || !mongoose.Types.ObjectId.isValid(resumeId)) {
       return NextResponse.json({ error: "Invalid resume id" }, { status: 400 });
     }
 
-    /* ---------- DB ---------- */
+    //db
     await connectDB();
 
     const resume = await Resume.findOne({
@@ -205,9 +205,7 @@ ${extractedText}
       );
     }
 
-    /* =====================================================
-       3️⃣ SKILL EXTRACTION (Groq ONLY)
-    ===================================================== */
+    //skill extraction (groq)
 
     let extractedSkills: string[] = [];
 
@@ -233,15 +231,25 @@ ${extractedText}
     const skillData = await skillRes.json();
     const raw = skillData?.choices?.[0]?.message?.content ?? "";
 
+    
     const match = raw.match(/\[[\s\S]*\]/);
-    if (match) {
-      const parsed = JSON.parse(match[0]);
-      if (Array.isArray(parsed)) {
-        extractedSkills = parsed.filter((s) => typeof s === "string");
-      }
-    }
+if (match) {
+  try {
+    const safeJson = match[0]
+      .replace(/,\s*]/g, "]")   // removes trailing commas
+      .replace(/,\s*}/g, "}");  // safety
 
-    /* ---------- SAVE ---------- */
+    const parsed = JSON.parse(safeJson);
+
+    if (Array.isArray(parsed)) {
+      extractedSkills = parsed.filter((s) => typeof s === "string");
+    }
+  } catch  {
+    console.error("Skill JSON parse failed:", raw);
+  }
+}
+
+    //save
     resume.analysisResult = analysisText;
     resume.extractedSkills = extractedSkills;
     resume.updatedAt = new Date();

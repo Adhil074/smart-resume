@@ -16,29 +16,29 @@ export default function HomePage() {
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // If not signed in, redirect to login (simple protection)
+  // if not signed in, redirect to login 
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
     }
   }, [status, router]);
 
-  // While loading session, show nothing (or a simple message)
+  // while loading session, shows nothing 
   if (status === "loading") return <div>Loading...</div>;
 
   const username = session?.user?.name || session?.user?.email || "User";
 
-  //
+  
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 flex flex-col">
-      {/* Sidebar */}
+      {/* sidebar */}
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-      {/* Header - Fixed at Top */}
+      {/* header  fixed at top */}
       <header className="border-b border-gray-200 bg-white shadow-sm sticky top-0 z-40">
         <div className="max-w-full px-6 py-4 flex items-center justify-between">
-          {/* Menu Button - Left */}
+          {/* menu button left */}
           
           <button
             onClick={() => setIsSidebarOpen(true)}
@@ -54,17 +54,17 @@ export default function HomePage() {
             ⋮
           </button>
 
-          {/* Welcome Text - Center */}
+          {/* welcome text center */}
           <h2 className="text-2xl font-semibold text-slate-900 absolute left-1/2 transform -translate-x-1/2">
             Welcome back, <span className="text-blue-600">{username}</span>
           </h2>
 
-          {/* Empty space for right alignment */}
+          {/* empty space for right alignment */}
           <div className="w-10"></div>
         </div>
       </header>
 
-      {/* Main Content */}
+      {/* main content */}
       <main className="flex-1 max-w-6xl mx-auto px-6 py-12 w-full">
         <div>
           <h3 className="text-lg font-semibold text-slate-900 mb-6">
@@ -72,7 +72,7 @@ export default function HomePage() {
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* Upload Resume */}
+            {/* upload resume */}
             <Link
               href="/upload"
               onClick={() => {
@@ -94,7 +94,7 @@ export default function HomePage() {
               </p>
             </Link>
 
-            {/* Create New Resume */}
+            {/* create new resume */}
             <Link
               href="/create-resume"
               className="group p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-200"
@@ -110,7 +110,7 @@ export default function HomePage() {
               </p>
             </Link>
 
-            {/* Upload JD */}
+            {/* upload jd */}
             <Link
               href="/upload-jd"
               className="group p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-200"
@@ -124,7 +124,7 @@ export default function HomePage() {
               <p className="text-sm text-slate-600">Upload a job description</p>
             </Link>
 
-            {/* Previous Resumes */}
+            {/* previous resumes */}
             <Link
               href="/previous-resumes"
               className="group p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-200"
@@ -138,7 +138,7 @@ export default function HomePage() {
               <p className="text-sm text-slate-600">View your saved resumes</p>
             </Link>
 
-            {/* AI Chatbot */}
+            {/* ai chatbot */}
             <Link
               href="/chatbot"
               className="group p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all duration-200"

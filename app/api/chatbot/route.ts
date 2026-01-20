@@ -1,4 +1,12 @@
+//app\api\chatbot\route.ts
+
 import { NextRequest, NextResponse } from "next/server";
+
+const GEMINI_URL =
+  "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" +
+  process.env.GOOGLE_API_KEY;
+
+const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 export async function POST(req: NextRequest) {
   try {
@@ -7,19 +15,10 @@ export async function POST(req: NextRequest) {
     if (!message) {
       return NextResponse.json(
         { error: "Message is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    const apiKey = process.env.GOOGLE_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: "Gemini API key not configured" },
-        { status: 500 }
-      );
-    }
-
-    // Create system prompts based on type
     let systemPrompt = "";
 
     switch (type) {
@@ -63,14 +62,14 @@ ${message}`;
 ${message}`;
     }
 
-    // Add context if provided
+    // adds context if provided
     if (context && context.length > 0) {
       const contextStr = context
         .map(
           (msg: { role: string; content: string }) =>
-            `${msg.role}: ${msg.content}`
+            `${msg.role}: ${msg.content}`,
         )
-        .join("");
+        .join("\n");
 
       systemPrompt = `Previous conversation:
 ${contextStr}
@@ -78,41 +77,96 @@ ${contextStr}
 ${systemPrompt}`;
     }
 
-    // Call Gemini API directly using fetch
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
-      {
+    //tries gemini first
+    try {
+      const response = await fetch(GEMINI_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [
             {
-              parts: [
-                {
-                  text: systemPrompt,
-                },
-              ],
+              parts: [{ text: systemPrompt }],
             },
           ],
         }),
-      }
-    );
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Gemini API Error:", errorData);
-      throw new Error("Failed to get response from Gemini");
+      if (!response.ok) {
+        const err = await response.text();
+        throw new Error(`Gemini failed: ${err}`);
+      }
+
+      const data = await response.json();
+      const text =
+        data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ?? "";
+
+      if (!text) {
+        throw new Error("Gemini returned empty response");
+      }
+
+      return NextResponse.json({
+        response: text,
+        provider: "gemini",
+        success: true,
+      });
+    } catch (geminiError) {
+      console.error("Gemini failed, falling back to Groq:", geminiError);
     }
 
-    const data = await response.json();
-    const text = data.candidates[0].content.parts[0].text;
+    // falls back to groq
+    try {
+      if (!process.env.GROQ_API_KEY) {
+        throw new Error("Groq API key not configured");
+      }
 
-    return NextResponse.json({
-      response: text,
-      success: true,
-    });
+      const groqRes = await fetch(GROQ_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: "llama-3.1-8b-instant",
+          temperature: 0.7,
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are a helpful AI assistant specialized in career guidance, resume writing, and professional development.",
+            },
+            {
+              role: "user",
+              content: systemPrompt,
+            },
+          ],
+        }),
+      });
+
+      if (!groqRes.ok) {
+        const err = await groqRes.text();
+        throw new Error(`Groq failed: ${err}`);
+      }
+
+      const groqData = await groqRes.json();
+      const groqText = groqData?.choices?.[0]?.message?.content?.trim() ?? "";
+
+      if (!groqText) {
+        throw new Error("Groq returned empty response");
+      }
+
+      return NextResponse.json({
+        response: groqText,
+        provider: "groq",
+        success: true,
+      });
+    } catch (groqError) {
+      console.error("Groq fallback failed:", groqError);
+
+      return NextResponse.json(
+        { error: "All AI providers failed" },
+        { status: 500 },
+      );
+    }
   } catch (error: unknown) {
     console.error("Error:", error);
     return NextResponse.json(
@@ -120,7 +174,7 @@ ${systemPrompt}`;
         error: "Failed to generate response",
         details: error instanceof Error ? error.message : String(error),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

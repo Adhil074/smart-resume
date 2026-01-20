@@ -10,12 +10,9 @@ type RouteContext = {
   params: Promise<{ id: string }>;
 };
 
-export async function GET(
-  req: NextRequest,
-  context: RouteContext
-) {
+export async function GET(req: NextRequest, context: RouteContext) {
   try {
-    /* ---------- AUTH ---------- */
+    //auth
     const token = await getToken({
       req,
       secret: process.env.NEXTAUTH_SECRET,
@@ -25,14 +22,14 @@ export async function GET(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    /* ---------- PARAMS ---------- */
+    //params
     const { id } = await context.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return new NextResponse("Invalid resume id", { status: 400 });
     }
 
-    /* ---------- DB ---------- */
+    //db
     await connectDB();
 
     const resume = await Resume.findOne({
@@ -44,7 +41,7 @@ export async function GET(
       return new NextResponse("Resume not found", { status: 404 });
     }
 
-    /* ---------- RESPONSE ---------- */
+    //response
     const headers = new Headers();
     headers.set("Content-Type", resume.mimeType);
     headers.set("Content-Disposition", "inline");

@@ -18,7 +18,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   return (
     <>
-      {/* Backdrop/Overlay */}
+      {/* backdrop/overlay */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-gray bg-opacity-10 z-30"
@@ -26,13 +26,13 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         />
       )}
 
-      {/* Sidebar */}
+      {/* sidebar */}
       <div
         className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Header */}
+        {/* header */}
         <div className="p-4 border-b">
           <div className="flex items-center justify-between">
             <h2 className="text-xl text-gray-800 font-bold">Settings</h2>
@@ -45,7 +45,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           </div>
         </div>
 
-        {/* Menu Items */}
+        {/* menu Items */}
         <div className="p-4">
           <button
             onClick={handleSignOut}

@@ -20,7 +20,7 @@ const RESOURCE_MAP: Record<string, ResourceLinks> = {
     course: "https://www.freecodecamp.org/learn/back-end-development-and-apis/",
   },
   mongodb: {
-    youtube: "https://www.youtube.com/watch?v=ofme2o29ngU", // MongoDB Crash Course
+    youtube: "https://www.youtube.com/watch?v=ofme2o29ngU", 
     docs: "https://www.mongodb.com/docs/",
     course:
       "https://www.freecodecamp.org/learn/back-end-development-and-apis/#mongodb-and-mongoose",

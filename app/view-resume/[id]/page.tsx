@@ -47,16 +47,28 @@ export default function ViewResumePage() {
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-900 to-slate-800 p-6">
       <div className="max-w-6xl mx-auto">
-        {/* Top bar */}
-        <div className="flex justify-between items-center mb-6">
+        {/* top bar */}
+        {/* <div className="flex justify-between items-center mb-6">
           <button
             onClick={() => router.back()}
-            className="text-slate-300 hover:text-white"
+            aria-label="Go back"
+            className="
+    absolute top-6 left-6
+    w-10 h-10
+    rounded-full
+    bg-slate-900/60
+    backdrop-blur-md
+    text-white
+    flex items-center justify-center
+    border border-white/50
+    hover:bg-slate-900/80
+    hover:scale-105
+    transition
+  "
           >
-            ← Back
+            ←
           </button>
-
-          <h1 className="text-2xl font-bold text-white">Resume Preview</h1>
+          <h1 className=" flex text-2xl  font-bold text-white">Resume Preview</h1>
 
           <button
             onClick={handleExport}
@@ -64,12 +76,48 @@ export default function ViewResumePage() {
           >
             Export PDF
           </button>
-        </div>
+        </div> */}
+        {/* Top bar */}
+<div className="relative flex items-center mb-6">
+  {/* Back */}
+  <button
+    onClick={() => router.back()}
+    aria-label="Go back"
+    className="
+      absolute left-0
+      w-10 h-10
+      rounded-full
+      bg-slate-900/60
+      backdrop-blur-md
+      text-white
+      flex items-center justify-center
+      border border-white/50
+      hover:bg-slate-900/80
+      hover:scale-105
+      transition
+    "
+  >
+    ←
+  </button>
 
-        {/* Meta */}
+  {/* Centered title */}
+  <h1 className="mx-auto text-2xl font-bold text-white text-center">
+    Resume Preview
+  </h1>
+
+  {/* Export */}
+  <button
+    onClick={handleExport}
+    className="absolute right-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold"
+  >
+    Export PDF
+  </button>
+</div>
+
+        {/* meta */}
         <div className="bg-white rounded-lg p-4 mb-6">
-          <p className="font-semibold">{resume.fileName}</p>
-          <p className="text-sm text-slate-500">
+          <p className="font-semibold text-slate-900 text-base break-all">{resume.fileName}</p>
+          <p className="text-sm text-slate-500 mt-1">
             Uploaded {new Date(resume.uploadedAt).toLocaleString()}
           </p>
         </div>

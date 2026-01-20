@@ -119,8 +119,27 @@ What would you like help with today?`,
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-900 to-slate-800 py-10 px-4">
+      <button
+        onClick={() => router.back()}
+        aria-label="Go back"
+        className="
+    absolute top-6 left-6
+    w-10 h-10
+    rounded-full
+    bg-slate-900/60
+    backdrop-blur-md
+    text-white
+    flex items-center justify-center
+    border border-white/50
+    hover:bg-slate-900/80
+    hover:scale-105
+    transition
+  "
+      >
+        ←
+      </button>
       <div className="max-w-5xl mx-auto flex flex-col gap-6">
-        {/* Header */}
+        {/* header */}
         <header>
           <h1 className="text-3xl font-bold text-white mb-2">
             AI Career Assistant
@@ -130,7 +149,7 @@ What would you like help with today?`,
           </p>
         </header>
 
-        {/* Quick actions */}
+        {/* quick actions */}
         <section className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 md:p-5">
           <p className="text-sm font-semibold text-slate-200 mb-3">
             Quick Actions:
@@ -152,9 +171,9 @@ What would you like help with today?`,
           </div>
         </section>
 
-        {/* Chat area */}
+        {/* chat area */}
         <main className="bg-white rounded-2xl shadow-xl flex flex-col h-[70vh] max-h-[700px]">
-          {/* Messages */}
+          {/* messages */}
           <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 bg-slate-50 border-b border-slate-200">
             {messages.map((message, index) => (
               <div
@@ -189,7 +208,7 @@ What would you like help with today?`,
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input area */}
+          {/* input area */}
           <div className="p-4 md:p-5 space-y-2">
             <textarea
               value={input}

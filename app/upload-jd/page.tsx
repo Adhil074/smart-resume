@@ -14,7 +14,7 @@ export default function UploadJDPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // 🔐 URL MODE (single source of truth)
+  // url mode
   const mode = searchParams.get("mode"); // "match" | null
   const isMatchMode = mode === "match";
 
@@ -25,7 +25,7 @@ export default function UploadJDPage() {
   const [matchPercent, setMatchPercent] = useState<number | null>(null);
   const [matchedSkills, setMatchedSkills] = useState<string[]>([]);
   const [missingSkills, setMissingSkills] = useState<string[]>([]);
-  const [resumeExists, setResumeExists] = useState<boolean | null>(null);
+  const [, setResumeExists] = useState<boolean | null>(null);
   const [didComputeMatch, setDidComputeMatch] = useState(false);
 
   function normalize(skill: string): string {
@@ -43,7 +43,7 @@ export default function UploadJDPage() {
 
     setIsLoading(true);
 
-    // 🔥 Hard reset every run
+    // hard resets every run
     setMatchPercent(null);
     setMatchedSkills([]);
     setMissingSkills([]);
@@ -52,7 +52,7 @@ export default function UploadJDPage() {
 
     let resumeSkills: string[] = [];
 
-    /* ================= MATCH MODE ONLY ================= */
+    //match mode only
     if (isMatchMode) {
       const resumeRes = await fetch("/api/resume/latest", {
         credentials: "include",
@@ -66,7 +66,7 @@ export default function UploadJDPage() {
       setResumeExists(resumeSkills.length > 0);
     }
 
-    /* ================= JD SKILL EXTRACTION ================= */
+    //jd skill extraction
     const jdRes = await fetch("/api/jd/analyzegroq", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -77,7 +77,7 @@ export default function UploadJDPage() {
     const jdSkills = jdData.skills ?? [];
     setGroqSkills(jdSkills);
 
-    /* ================= MATCH CALCULATION ================= */
+    //match calculation
     if (isMatchMode && resumeSkills.length > 0 && jdSkills.length > 0) {
       const resumeSet = new Set(resumeSkills.map(normalize));
       const jdNormalized = jdSkills.map(normalize);
@@ -93,7 +93,7 @@ export default function UploadJDPage() {
       setDidComputeMatch(true);
     }
 
-    /* ================= SAVE JD ================= */
+    //saves jd
     await fetch("/api/jd", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -106,7 +106,6 @@ export default function UploadJDPage() {
   function handleJDChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setJdText(e.target.value);
 
-    // 🔥 Absolute kill switch for stale match
     setMatchPercent(null);
     setMatchedSkills([]);
     setMissingSkills([]);
@@ -115,32 +114,56 @@ export default function UploadJDPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-linear-to-br from-slate-900 to-slate-800 py-10 px-4">
+      <button
+        onClick={() => router.back()}
+        aria-label="Go back"
+        className="
+    absolute top-6 left-6
+    w-10 h-10
+    rounded-full
+    bg-slate-900/60
+    backdrop-blur-md
+    text-white
+    flex items-center justify-center
+    border border-white/50
+    hover:bg-slate-900/80
+    hover:scale-105
+    transition
+  "
+      >
+        ←
+      </button>
+
       <div className="bg-white rounded-lg px-6 py-2 mb-4">
         <h1 className="text-2xl font-bold text-slate-800">
           Upload Job Description
         </h1>
       </div>
 
-      <textarea
-        placeholder="Paste job description here..."
-        value={jdText}
-        onChange={handleJDChange}
-        className="w-full max-w-4xl min-h-[350px] rounded-lg border border-gray-300 p-3 mb-6 bg-slate-50 text-gray-800"
-      />
+      <div className="w-full max-w-4xl mx-auto">
+        <textarea
+          placeholder="Paste job description here..."
+          value={jdText}
+          onChange={handleJDChange}
+          className="w-full min-h-[350px] rounded-lg border border-gray-300 p-3 mb-6 bg-slate-50 text-gray-800"
+        />
 
-      <button
-        onClick={handleAnalyze}
-        disabled={isLoading}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-semibold mb-8"
-      >
-        {isLoading ? "Analyzing..." : "Analyze JD"}
-      </button>
+        <div className="flex justify-center">
+          <button
+            onClick={handleAnalyze}
+            disabled={isLoading}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded font-semibold mb-8 transition"
+          >
+            {isLoading ? "Analyzing..." : "Analyze JD"}
+          </button>
+        </div>
+      </div>
 
       <div className="w-full max-w-4xl">
-        {/* ✅ MATCH UI (MATCH MODE ONLY) */}
+        {/* match ui only match mode */}
         {isMatchMode && didComputeMatch && matchPercent !== null && (
           <>
-            <h2 className="text-xl font-semibold mb-4 text-white">
+            <h2 className="text-xl font-semibold mb-6 text-white text-center">
               Resume ↔ JD Match
             </h2>
 
@@ -150,7 +173,7 @@ export default function UploadJDPage() {
                 <span className="text-green-600">{matchPercent}%</span>
               </p>
 
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="font-semibold mb-2 text-slate-700">
                     Matched Skills - Keywords
@@ -177,23 +200,16 @@ export default function UploadJDPage() {
           </>
         )}
 
-        {/* ❌ CTA ONLY IN MATCH MODE */}
-        {isMatchMode && resumeExists === false && groqSkills.length > 0 && (
-          <p
-            onClick={() => router.push("/upload")}
-            className="text-yellow-400 underline cursor-pointer text-center mb-6"
-          >
-            Analyze resume to check Resume ↔ JD Match
-          </p>
-        )}
-
-        {/* 📚 LEARNING RESOURCES (ALWAYS) */}
+        {/* learning resources always  */}
         {groqSkills.length > 0 && (
           <>
-            <h2 className="text-xl font-semibold mb-4 text-white">
-              Learning Resources
-            </h2>
-            <LearningResources skills={groqSkills} />
+            <div className="w-full max-w-4xl mx-auto">
+              <div className="w-full flex justify-center">
+                <div className="w-full max-w-4xl text-center">
+                  <LearningResources skills={groqSkills} />
+                </div>
+              </div>
+            </div>
           </>
         )}
       </div>

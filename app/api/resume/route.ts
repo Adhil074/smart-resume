@@ -6,10 +6,9 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectDB from "@/lib/mongodb";
 import Resume from "@/models/Resume";
 
-/**
- * GET /api/resume
- * Returns resumes for the logged-in user only
- */
+//GET /api/resume
+// returns resumes for the logged-in user only
+
 export async function GET(): Promise<NextResponse> {
   const session = await getServerSession(authOptions);
 
@@ -28,10 +27,9 @@ export async function GET(): Promise<NextResponse> {
   return NextResponse.json({ resumes }, { status: 200 });
 }
 
-/**
- * PUT /api/resume?id=...
- * Updates extractedText + extractedSkills
- */
+//PUT /api/resume?id=...
+//updates extractedText + extractedSkills
+
 interface UpdateResumeBody {
   editedText: string;
   extractedSkills: string[];
@@ -64,13 +62,13 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
       extractedText: body.editedText,
       extractedSkills: body.extractedSkills,
     },
-    { new: true }
+    { new: true },
   ).lean();
 
   if (!updated) {
     return NextResponse.json(
       { error: "Resume not found or access denied" },
-      { status: 404 }
+      { status: 404 },
     );
   }
 

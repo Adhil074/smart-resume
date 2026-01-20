@@ -33,12 +33,6 @@ export async function POST(req: Request) {
 
     const raw = completion.choices[0]?.message?.content ?? "[]";
 
-    // let skills: string[] = [];
-    // try {
-    //   skills = JSON.parse(raw);
-    // } catch {
-    //   skills = [];
-    // }
     let skills: string[] = [];
 
     const match = raw.match(/\[[\s\S]*\]/);
