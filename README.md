@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+==AURARES.AI==
 
-## Getting Started
+- AuraRes.ai is a full-stack web application that helps users build resumes, analyze resumes using ATS logic, match resumes with job descriptions, and get learning suggestions in one place.
+  This project focuses on practical resume workflows, clean UI, and clear backend logic.
 
-First, run the development server:
+- Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Upload Resume
+   a. Users can upload an existing resume in PDF format.
+   b. The resume is stored securely in the database.
+   c. Resume text and skills are extracted using AI.
+   d. Uploaded resumes can be viewed later from the Previous Resumes page.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. ATS Resume Analysis
+   a. The system analyzes the uploaded resume.
+   b. It checks for:
+   c. Important skills
+   Missing keywords
+   Overall ATS compatibility
+   d. Results are displayed in a clean and readable format.
+   e. If analysis fails or data is missing, safe fallbacks are applied.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Resume ↔ Job Description Match
+   a. Users can upload a Job Description (JD).
+   b. Skills are extracted from the JD.
+   c. Resume skills and JD skills are normalized before comparison.
+   d. A match score is calculated based on actual matched skills.
+   e. The result includes:
+   Match percentage
+   Matched skills - Keywords
+   Missing skills - keywords
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Learning Resources
+   a. Based on extracted or missing skills, learning resources are shown.
+   b. For each skill, users get links to:
+   YouTube
+   Official documentation
+   Courses
+   c. This section appears only when relevant data exists.
 
-## Learn More
+5. Create Resume (From Scratch)
+   a. Users can create a resume without uploading one.
+   b. Two resume templates are available:
+   – Professional Classic
+   – Modern Career
+   c. Resume preview updates in real time.
+   d. Empty fields are not shown in the preview or exported PDF.
 
-To learn more about Next.js, take a look at the following resources:
+6. Resume Export (PDF)
+   a. Created resumes can be exported as PDFs.
+   b. PDF generation is handled on the server.
+   c. Only filled sections are included in the final PDF.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+7. AI Chatbot
+   a. A built-in AI chatbot is available for resume and career-related queries.
+   b. Works independently from resume upload and analysis features.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Tech Stack
 
-## Deploy on Vercel
+* Frontend
+  Next.js (App Router)
+  React
+  TypeScript
+  Tailwind CSS
+* Backend
+  Next.js API Routes
+  MongoDB
+  Mongoose
+  NextAuth (Authentication)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- AI & Processing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* AI-based text and skill extraction.
+* Manual logic for ATS scoring and resume–JD matching
+
+- PDF Generation
+
+* Puppeteer (HTML to PDF)
+
+- How Resume–JD Matching Works?
+
+* Resume skills and JD skills are extracted.
+* Skills are normalized (lowercase, cleaned text).
+* Matching is done using set comparison.
+* Match percentage is calculated based on actual matches.
+
+- Error Handling and Fallbacks
+
+* Empty fields are skipped automatically.
+* Missing resume or JD is handled safely.
+* API routes are protected using authentication.
+* UI avoids rendering incomplete or invalid data.
+
+- Purpose of This Project
+
+* To practice full-stack development with Next.js.
+* To understand ATS logic and resume workflows.
+* To learn server-side PDF generation.
+* To build a real, usable application instead of a demo project.
+
+- Deployment
+
+* The application is prepared for deployment on Vercel with environment-based configuration.
