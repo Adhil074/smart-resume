@@ -1,11 +1,12 @@
-// //app\api\resume\pdf\route.ts
-
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
+import chromium from "@sparticuz/chromium";
 import connectDB from "@/lib/mongodb";
 import Resume from "@/models/Resume";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
+export const runtime = "nodejs"; // IMPORTANT for Vercel
 
 type PdfPayload = {
   fullName: string;
@@ -21,31 +22,32 @@ type PdfPayload = {
 };
 
 export async function POST(req: NextRequest) {
-  //auth
   const session = await getServerSession(authOptions);
-  const section = (title: string, content?: string) => {
-    if (!content || !content.trim()) return "";
-    return `
-    <h2>${title}</h2>
-    <p>${content}</p>
-  `;
-  };
 
   if (!session?.user?.id || !session.user.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
-    //input
     const body = (await req.json()) as PdfPayload;
+
     if (!body.fullName || !body.email) {
-      throw new Error("Invalid PDF payload: name or email missing");
+      return NextResponse.json(
+        { error: "Invalid PDF payload" },
+        { status: 400 }
+      );
     }
 
-    //db
     await connectDB();
 
-    //html by template
+    const section = (title: string, content?: string): string => {
+      if (!content || !content.trim()) return "";
+      return `
+        <h2>${title}</h2>
+        <p>${content}</p>
+      `;
+    };
+
     let html = "";
 
     if (body.template === "templateA") {
@@ -157,16 +159,16 @@ ${section("Certifications", body.certifications)}
 `;
     }
 
-    //puppeteer
     const browser = await puppeteer.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath(),
       headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "networkidle0" });
 
-    const pdfUint8 = await page.pdf({
+    const pdfBuffer = await page.pdf({
       format: "A4",
       printBackground: true,
       margin: {
@@ -179,26 +181,26 @@ ${section("Certifications", body.certifications)}
 
     await browser.close();
 
-    const pdfBuffer = Buffer.from(pdfUint8);
+    if (!pdfBuffer || pdfBuffer.length === 0) {
+      throw new Error("Generated PDF is empty");
+    }
 
     const safeName = body.fullName.replace(/\s+/g, "_").toLowerCase();
     const fileName = `${safeName}-${Date.now()}.pdf`;
 
-    //saves to db
     await Resume.create({
       userId: session.user.id,
       name: body.fullName,
       email: body.email,
       fileName,
       mimeType: "application/pdf",
-      fileData: pdfBuffer,
+      fileData: Buffer.from(pdfBuffer),
       extractedText: "",
       extractedSkills: [],
       uploadedAt: new Date(),
     });
 
-    //response
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(Buffer.from(pdfBuffer), {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="${fileName}"`,
@@ -208,7 +210,7 @@ ${section("Certifications", body.certifications)}
     console.error("PDF_GENERATION_ERROR:", error);
     return NextResponse.json(
       { error: "PDF generation failed" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
