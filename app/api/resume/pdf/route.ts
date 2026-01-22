@@ -1,19 +1,13 @@
-//app\api\resume\pdf\route.ts
-
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import connectDB from "@/lib/mongodb";
 import Resume from "@/models/Resume";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+import type { TDocumentDefinitions } from "pdfmake/interfaces";
+import PdfPrinter from "pdfmake";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
-
-// pdfmake font init (REQUIRED)
-// pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 type PdfPayload = {
   fullName: string;
@@ -31,17 +25,18 @@ type PdfPayload = {
 type PdfContentBlock = {
   text: string;
   style: string;
-  margin?: number[];
+  margin?: [number, number, number, number];
 };
 
-type PdfDocDefinition = {
-  pageSize: "A4";
-  pageMargins: number[];
-  content: PdfContentBlock[];
-  styles: Record<string, unknown>;
-  defaultStyle: {
-    font: string;
-  };
+
+
+const fonts = {
+  Helvetica: {
+    normal: "Helvetica",
+    bold: "Helvetica-Bold",
+    italics: "Helvetica-Oblique",
+    bolditalics: "Helvetica-BoldOblique",
+  },
 };
 
 export async function POST(req: NextRequest) {
@@ -57,20 +52,11 @@ export async function POST(req: NextRequest) {
     if (!body.fullName || !body.email) {
       return NextResponse.json(
         { error: "Invalid PDF payload" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
     await connectDB();
-
-    // const section = (title: string, content?: string) => {
-    //   if (!content || !content.trim()) return [];
-    //   return [
-    //     { text: title, style: "sectionHeader" },
-    //     { text: content, style: "sectionBody" },
-    //   ];
-    // };
-    
 
     const section = (title: string, content?: string): PdfContentBlock[] => {
       if (!content || !content.trim()) return [];
@@ -80,14 +66,14 @@ export async function POST(req: NextRequest) {
       ];
     };
 
-    const docDefinition:PdfDocDefinition = {
+    const docDefinition: TDocumentDefinitions= {
       pageSize: "A4",
       pageMargins: [40, 40, 40, 40],
 
       content: [
         { text: body.fullName, style: "name" },
         {
-          text: `${body.email}${body.phone ? " | " + body.phone : ""}`,
+          text: `${body.email}${body.phone ? ` | ${body.phone}` : ""}`,
           style: "contact",
           margin: [0, 0, 0, 20],
         },
@@ -96,7 +82,7 @@ export async function POST(req: NextRequest) {
           body.template === "templateA"
             ? "Professional Summary"
             : "Career Objective",
-          body.summary,
+          body.summary
         ),
         ...section("Skills", body.skills),
         ...section("Education", body.education),
@@ -125,24 +111,22 @@ export async function POST(req: NextRequest) {
           margin: [0, 0, 0, 5],
         },
       },
+
       defaultStyle: {
         font: "Helvetica",
       },
     };
 
-    // pdfmake buffer generation (PROMISE SAFE)
-    if (!pdfMake.vfs) {
-  pdfMake.vfs = pdfFonts.pdfMake?.vfs;
-}
+    const printer = new PdfPrinter(fonts);
+    const pdfDoc = printer.createPdfKitDocument(docDefinition);
+
+    const chunks: Uint8Array[] = [];
+
     const pdfBuffer: Buffer = await new Promise((resolve, reject) => {
-      try {
-        const pdfDoc = pdfMake.createPdf(docDefinition);
-        pdfDoc.getBuffer((buffer: Uint8Array) => {
-          resolve(Buffer.from(buffer));
-        });
-      } catch (err) {
-        reject(err);
-      }
+      pdfDoc.on("data", (chunk) => chunks.push(chunk));
+      pdfDoc.on("end", () => resolve(Buffer.concat(chunks)));
+      pdfDoc.on("error", reject);
+      pdfDoc.end();
     });
 
     if (!pdfBuffer.length) {
@@ -174,7 +158,7 @@ export async function POST(req: NextRequest) {
     console.error("PDF_GENERATION_ERROR:", error);
     return NextResponse.json(
       { error: "PDF generation failed" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
