@@ -13,7 +13,7 @@ export const runtime = "nodejs";
 export const maxDuration = 60;
 
 // pdfmake font init (REQUIRED)
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 type PdfPayload = {
   fullName: string;
@@ -131,6 +131,9 @@ export async function POST(req: NextRequest) {
     };
 
     // pdfmake buffer generation (PROMISE SAFE)
+    if (!pdfMake.vfs) {
+  pdfMake.vfs = pdfFonts.pdfMake?.vfs;
+}
     const pdfBuffer: Buffer = await new Promise((resolve, reject) => {
       try {
         const pdfDoc = pdfMake.createPdf(docDefinition);
