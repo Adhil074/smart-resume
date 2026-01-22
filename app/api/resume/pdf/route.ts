@@ -1,3 +1,5 @@
+// app/api/resume/pdf/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import puppeteer from "puppeteer-core";
@@ -6,7 +8,8 @@ import connectDB from "@/lib/mongodb";
 import Resume from "@/models/Resume";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-export const runtime = "nodejs"; // IMPORTANT for Vercel
+export const runtime = "nodejs";
+export const maxDuration = 60;
 
 type PdfPayload = {
   fullName: string;
@@ -168,7 +171,7 @@ ${section("Certifications", body.certifications)}
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "networkidle0" });
 
-    const pdfBuffer = await page.pdf({
+    const pdfUint8 = await page.pdf({
       format: "A4",
       printBackground: true,
       margin: {
@@ -181,7 +184,9 @@ ${section("Certifications", body.certifications)}
 
     await browser.close();
 
-    if (!pdfBuffer || pdfBuffer.length === 0) {
+    const pdfBuffer = Buffer.from(pdfUint8);
+
+    if (pdfBuffer.length === 0) {
       throw new Error("Generated PDF is empty");
     }
 
@@ -194,13 +199,13 @@ ${section("Certifications", body.certifications)}
       email: body.email,
       fileName,
       mimeType: "application/pdf",
-      fileData: Buffer.from(pdfBuffer),
+      fileData: pdfBuffer,
       extractedText: "",
       extractedSkills: [],
       uploadedAt: new Date(),
     });
 
-    return new NextResponse(Buffer.from(pdfBuffer), {
+    return new NextResponse(pdfBuffer, {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="${fileName}"`,
