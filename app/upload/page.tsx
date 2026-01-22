@@ -93,7 +93,7 @@ export default function UploadPage() {
       </button>
 
       {/* main container */}
-      <div className="w-full max-w-6xl mx-auto bg-slate-100 rounded-2xl shadow-xl p-5 sm:p-6 lg:p-8">
+      <div className="w-full max-w-6xl mx-auto bg-slate-100 rounded-2xl shadow-xl p-5 sm:p-6 lg:p-8 mt-2">
         <h1 className="text-xl font-semibold text-center text-slate-800 mb-6">
           Upload Resume
         </h1>

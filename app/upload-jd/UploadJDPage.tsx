@@ -203,7 +203,7 @@ export default function UploadJDPage() {
         {/* learning resources always  */}
         {groqSkills.length > 0 && (
           <>
-            <div className="w-full max-w-4xl mx-auto">
+            <div className="w-full max-w-4xl mx-auto ">
               <div className="w-full flex justify-center">
                 <div className="w-full max-w-4xl text-center">
                   <LearningResources skills={groqSkills} />
