@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    marginBottom: 16,
+    marginBottom: 6,
   },
 
   name: {
@@ -70,18 +70,18 @@ const styles = StyleSheet.create({
 
   contact: {
     fontSize: 10,
-    marginTop: 4,
+    marginTop: 5,
     color: "#444",
   },
 
   headerRule: {
     borderBottomWidth: 1,
     borderBottomColor: "#999",
-    marginTop: 8,
+    marginTop: 4,
   },
 
   section: {
-    marginTop: 10,
+    marginTop: 6,
   },
 
   sectionTitle: {

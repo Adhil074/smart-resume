@@ -22,3 +22,4 @@ export function registerPdfFonts() {
 
   registered = true;
 }
+
