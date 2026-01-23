@@ -1,15 +1,8 @@
-//smart-resume/next.config.ts
-
+// smart-resume/next.config.ts
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  experimental: {},
-  serverExternalPackages: ["pdf-parse"],
+  serverExternalPackages: ["@react-pdf/renderer"],
 };
 
 export default nextConfig;
-
-
-
-

@@ -15,7 +15,7 @@ export default function UploadJDPage() {
   const searchParams = useSearchParams();
 
   // url mode
-  const mode = searchParams.get("mode"); // "match" | null
+  const mode = searchParams?.get("mode")??null; 
   const isMatchMode = mode === "match";
 
   const [jdText, setJdText] = useState("");

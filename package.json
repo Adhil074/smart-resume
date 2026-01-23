@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.11.1",
+    "@react-pdf/renderer": "^4.3.2",
     "bcryptjs": "^3.0.3",
     "docx": "^9.5.1",
     "groq-sdk": "^0.37.0",
