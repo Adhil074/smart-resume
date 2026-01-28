@@ -23,7 +23,9 @@ export default function TemplateA({
   certifications,
 }: TemplateAProps) {
   return (
-    <div className="text-sm  text-black font-serif">
+    <div className="text-sm  text-black font-sans"
+    style={{ fontFamily: '"Times New Roman", Times, serif' }} >
+       
       {(fullName || email || phone) && (
         <div className="text-center mb-4">
           {fullName && <h1 className="text-xl font-bold">{fullName}</h1>}

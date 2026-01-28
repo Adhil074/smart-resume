@@ -59,8 +59,9 @@ const styles = StyleSheet.create({
   page: {
     padding: 40,
     fontSize: 10.5,
-    fontFamily: "Helvetica",
-    lineHeight: 1.5,
+    
+    fontFamily: "Times-Roman",
+    lineHeight: 1.45,
   },
 
   header: {
@@ -71,6 +72,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 22,
     fontWeight: "bold",
+    fontFamily:"Times-Bold",
     marginBottom:7,
   },
 
@@ -94,6 +96,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 11,
     fontWeight: "bold",
+    fontFamily:"Times-Bold",
     marginTop:10,
     marginBottom:4,
     borderBottomWidth:0.5,

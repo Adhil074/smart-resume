@@ -100,16 +100,48 @@ export default function UploadPage() {
 
         {/* upload section */}
         <div className="flex flex-col items-center gap-4">
-          <input
-            type="file"
-            accept=".pdf,.docx"
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            className="w-full max-w-md border border-slate-300 text-black rounded-lg px-4 py-2 bg-white"
-          />
+          <label className="w-full max-w-md">
+            <input
+              type="file"
+              accept=".pdf,.docx"
+              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              className="hidden"
+            />
 
-          {file && (
+            <div
+              className="
+      flex items-center justify-between
+      w-full px-4 py-2
+      border border-slate-300
+      rounded-lg
+      bg-white
+      cursor-pointer
+      hover:border-slate-400
+      transition
+    "
+            >
+              <span className="text-sm text-slate-600">
+                {file ? file.name : "No file chosen"}
+              </span>
+
+              <span
+                className="
+        ml-4
+        px-3 py-1
+        text-sm font-medium
+        bg-slate-200
+        rounded
+        text-slate-800
+      "
+              >
+                Choose File
+              </span>
+            </div>
+          </label>
+
+          {/* {file && (
             <p className="text-sm text-green-700">File selected: {file.name}</p>
-          )}
+          )} */}
 
           {error && <p className="text-sm text-red-600 font-medium">{error}</p>}
 

@@ -2,11 +2,15 @@
 
 export default function TemplateBThumbnail() {
   return (
-    <div className="w-[260px] h-auto bg-white text-black font-sans text-[10px] leading-tight p-3">
+    
+    <div
+  className="w-[260px] h-auto bg-white text-black text-[10px] leading-tight p-3"
+  style={{ fontFamily: '"Times New Roman", Times, serif' }}
+>
       {/* header */}
       <div className="mb-2">
-        <p className="text-[11px] font-semibold text-blue-700">John Doe</p>
-        <p className="text-[9px]">john.doe@email.com | 9876543210</p>
+        <p className="text-[11px] font-semibold text-blue-700">Adhil Baig</p>
+        <p className="text-[9px]">adhil@email.com | 9876543210</p>
       </div>
 
       <div className="border-b border-gray-400 mb-2" />

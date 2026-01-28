@@ -2,11 +2,14 @@
 
 export default function TemplateAThumbnail() {
   return (
-    <div className="w-[260px] h-auto bg-white text-black font-serif text-[10px] leading-tight p-3">
+    <div
+      className="w-[260px] h-auto bg-white text-black text-[10px] leading-tight p-3"
+      style={{ fontFamily: '"Times New Roman", Times, serif' }}
+    >
       {/* header */}
       <div className="text-center mb-2">
-        <p className="font-bold text-[11px]">John Doe</p>
-        <p className="text-[9px]">john.doe@email.com | 9876543210</p>
+        <p className="font-bold text-[11px]">Adhil Baig</p>
+        <p className="text-[9px]">adhil@email.com | 9876543210</p>
       </div>
 
       {/* summary */}

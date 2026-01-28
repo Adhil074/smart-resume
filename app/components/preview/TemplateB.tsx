@@ -1,5 +1,3 @@
-// app\components\preview\TemplateB.tsx
-
 type TemplateBProps = {
   fullName: string;
   email: string;
@@ -9,7 +7,7 @@ type TemplateBProps = {
   education: string;
   experience: string;
   projects: string;
-  certifications:string;
+  certifications: string;
 };
 
 export default function TemplateB({
@@ -24,63 +22,71 @@ export default function TemplateB({
   certifications,
 }: TemplateBProps) {
   return (
-    <div className="text-sm text-slate-800 font-sans">
+    <div
+      className="text-sm text-slate-800 leading-normal font-sans"
+      style={{ fontFamily: '"Times New Roman", Times, serif' }} 
+    >
       {(fullName || email || phone) && (
         <>
           {fullName && (
-            <h1 className="text-lg font-semibold text-blue-700">{fullName}</h1>
+            <h1 className="text-xl font-semibold text-blue-700">
+              {fullName}
+            </h1>
           )}
-
           {(email || phone) && (
-            <p className="text-xs mb-2">
+            <p className="text-sm mb-2">
               {email}
               {email && phone && " | "}
               {phone}
             </p>
           )}
-
-          <div className="border-b border-gray-400 mb-3" />
+          <div className="border-b border-gray-400 mb-4" /> 
         </>
       )}
 
       {summary && (
         <>
-          <h2 className="text-blue-600 font-semibold">Career Objective</h2>
-          <p className="mb-3">{summary}</p>
+          <h2 className="text-blue-600 font-semibold uppercase">
+            Career Objective
+          </h2>
+          <p className="mb-4">{summary}</p> 
         </>
       )}
 
       {skills && (
         <>
-          <h2 className="text-blue-600 font-semibold">Skills</h2>
-          <p>{skills}</p>
+          <h2 className="text-blue-600 font-semibold uppercase">Skills</h2>
+          <p className="mb-4">{skills}</p> 
         </>
       )}
 
       {education && (
         <>
-          <h2 className="text-blue-600 font-semibold">Education</h2>
-          <p className="mb-3">{education}</p>
+          <h2 className="text-blue-600 font-semibold uppercase">Education</h2>
+          <p className="mb-4">{education}</p>
         </>
       )}
+
       {experience && (
         <>
-          <h2 className="text-blue-600 font-semibold">EXPERIENCE</h2>
-          <p className="mb-3">{experience}</p>
+          <h2 className="text-blue-600 font-semibold uppercase">Experience</h2>
+          <p className="mb-4">{experience}</p>
         </>
       )}
 
       {projects && (
         <>
-          <h2 className="text-blue-600 font-semibold">PROJECTS</h2>
-          <p className="mb-3">{projects}</p>
+          <h2 className="text-blue-600 font-semibold uppercase">Projects</h2>
+          <p className="mb-4">{projects}</p>
         </>
       )}
 
-        {certifications && (
+      {certifications && (
         <>
-          <h2 className="text-blue-600 font-semibold">CERTIFICATIONS</h2>
-          <p className="mb-3">{certifications}</p>
+          <h2 className="text-blue-600 font-semibold uppercase">
+            Certifications
+          </h2>
+          <p className="mb-4">{certifications}</p>
         </>
       )}
     </div>
